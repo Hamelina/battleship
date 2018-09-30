@@ -1,0 +1,1 @@
+This is a battleship implemented in Scala by Hamelina Julia EHAMELO

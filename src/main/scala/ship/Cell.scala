@@ -8,9 +8,9 @@ import game._
   * @param _x the position of the cell x-axis (here it is converted to Int be it is shown as letter(string) to the user
   * @param _y the position of the cell y-axis
   */
-case class Cell (var _x:Int, var _y:Int){
-  def x: Int = _x
-  def y: Int = _y
+case class Cell (private val _x:Int, private val _y:Int){
+  def x: Int = this._x
+  def y: Int = this._y
 }
 
 /**
@@ -24,7 +24,7 @@ object Cell {
     * @param y The coordonate on the y-axis of the cell that needs to be checked
     * @return Boolean equals to true if the cell is inside the grid, otherwise it equals to false
     */
-  def isValid(x: Int, y: Int): Boolean = if ((x < 1) || (x > Grid.limitX) || (y < 1) || (y > Grid.limitY)) {
+  def isValid(x: Int, y: Int): Boolean = if ((x < 0) || (x > Grid.limitX) || (y < 0) || (y > Grid.limitY)) {
     false
   } else true
 

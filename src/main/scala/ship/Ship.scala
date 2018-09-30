@@ -8,15 +8,15 @@ import scala.annotation.tailrec
   * @param _typeName The type of the ship: either "Carrier" or "Battleship" or "Cruiser" or "Submarine" or "Destroyer"
   * @param _cells The cells currently occupied by the ship
   */
-case class Ship (var _typeName: String, var _cells: List[Cell]){
-  def typeName: String = _typeName
-  def cells: List[Cell] = _cells
+case class Ship (private val _typeName: String, private val _cells: List[Cell]){
+  def typeName: String = this._typeName
+  def cells: List[Cell] = this._cells
 
   /**
     * This function says if this ship is sunk or not
     * @return Boolean that corresponds to the state of the ship: either sunk or not
     */
-  def isSunk(): Boolean = cells.isEmpty
+  def isSunk: Boolean = cells.isEmpty
 
   /**
     * This function returns if this ship shares at least one cell with another ship or not.
@@ -105,12 +105,6 @@ object Ship{
       case _ => false
     })
   }
-
-
-
-
-
-  //A function that returns true if each cells of 2 ships are not separated with at least one cell
 }
 
 

@@ -8,6 +8,9 @@ object Main extends App{
 
 
 
+  val l2 = List(List("T ", "O", "M"), List("O", "T", "M"))
+
+
   /*println("Welcome to you ! You have started the most enjoyable game ever: the battleship !")
   val playerType = scala.io.StdIn.readLine("Are you an AI ? 'yes' or 'no'") match {
     case "yes" => true

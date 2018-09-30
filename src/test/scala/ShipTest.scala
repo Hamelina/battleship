@@ -1,6 +1,6 @@
+import game._
 import org.scalatest._
 import ship._
-import game._
 
 
 class ShipTest extends FunSuite with DiagrammedAssertions {
@@ -18,9 +18,9 @@ class ShipTest extends FunSuite with DiagrammedAssertions {
     assert(ship.typeName=="Carrier")
   }
   test(testName = "should return if a ship is sunk or not"){
-    assert(!ship.isSunk())
-    assert(!Ship(_typeName = "Carrier",_cells = list.tail).isSunk())
-    assert(Ship(_typeName = "Carrier",_cells = list.tail.tail).isSunk())
+    assert(!ship.isSunk)
+    assert(!Ship(_typeName = "Carrier",_cells = list.tail).isSunk)
+    assert(Ship(_typeName = "Carrier",_cells = list.tail.tail).isSunk)
   }
   test(testName = "the method Ship.createShip should create an identical ship as the val ship"){
     //create ship by calling the function
@@ -30,29 +30,29 @@ class ShipTest extends FunSuite with DiagrammedAssertions {
     assert(ship.typeName==ship2.typeName)
   }
   test(testName = "should say whether a ship can or cannot be built on an empty grid"){
-    //this ship cannot be built
-    assert(!Ship.isValid(x = 0,y = 3, size = 1, direction = "up"))
+    //this ship can be built
+    assert(Ship.isValid(x = 0,y = 3, size = 1, direction = "up"))
 
     //test the corner
-    assert(!Ship.isValid(x = 1,y = 1, size = 2, direction = "up"))
-    assert(Ship.isValid(x = 1,y = 1, size = 2, direction = "down"))
-    assert(!Ship.isValid(x = 1,y = 1, size = 2, direction = "left"))
-    assert(Ship.isValid(x = 1,y = 1, size = 2, direction = "right"))
+    assert(!Ship.isValid(x = 0,y = 0, size = 2, direction = "up"))
+    assert(Ship.isValid(x = 0,y = 0, size = 2, direction = "down"))
+    assert(!Ship.isValid(x = 0,y = 0, size = 2, direction = "left"))
+    assert(Ship.isValid(x = 0,y = 0, size = 2, direction = "right"))
 
-    assert(Ship.isValid(x = Grid.limitX,y = Grid.limitY, size = 2, direction = "up"))
+    assert(Ship.isValid(x = Grid.limitX ,y = Grid.limitY , size = 2, direction = "up"))
     assert(!Ship.isValid(x = Grid.limitX,y = Grid.limitY, size = 2, direction = "down"))
     assert(Ship.isValid(x = Grid.limitX,y = Grid.limitY, size = 2, direction = "left"))
     assert(!Ship.isValid(x = Grid.limitX,y = Grid.limitY, size = 2, direction = "right"))
 
-    assert(Ship.isValid(x = 1,y = Grid.limitY, size = 2, direction = "up"))
-    assert(!Ship.isValid(x = 1,y = Grid.limitY, size = 2, direction = "down"))
-    assert(!Ship.isValid(x = 1,y = Grid.limitY, size = 2, direction = "left"))
-    assert(Ship.isValid(x = 1,y = Grid.limitY, size = 2, direction = "right"))
+    assert(Ship.isValid(x = 0,y = Grid.limitY, size = 2, direction = "up"))
+    assert(!Ship.isValid(x = 0,y = Grid.limitY, size = 2, direction = "down"))
+    assert(!Ship.isValid(x = 0,y = Grid.limitY, size = 2, direction = "left"))
+    assert(Ship.isValid(x = 0,y = Grid.limitY, size = 2, direction = "right"))
 
-    assert(!Ship.isValid(x = Grid.limitX,y = 1, size = 2, direction = "up"))
-    assert(Ship.isValid(x = Grid.limitX,y = 1, size = 2, direction = "down"))
-    assert(Ship.isValid(x = Grid.limitX,y = 1, size = 2, direction = "left"))
-    assert(!Ship.isValid(x = Grid.limitX,y = 1, size = 2, direction = "right"))
+    assert(!Ship.isValid(x = Grid.limitX,y = 0, size = 2, direction = "up"))
+    assert(Ship.isValid(x = Grid.limitX,y = 0, size = 2, direction = "down"))
+    assert(Ship.isValid(x = Grid.limitX,y = 0, size = 2, direction = "left"))
+    assert(!Ship.isValid(x = Grid.limitX,y = 0, size = 2, direction = "right"))
 
     //this ship can be built
     assert(Ship.isValid(x = 3,y = 3, size = 1, direction = "up"))

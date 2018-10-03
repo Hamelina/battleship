@@ -15,9 +15,9 @@ import scala.annotation.tailrec
   * @param _isTurnToPlay A boolean that states if it is the player's turn to play. At the beginning of the game, it is always false.
   * @param _gridStates A grid that corresponds to a list of lists of String that describes the state of each cell (is used to display)
   */
-case class Player (private val _fleet: List[Ship], private val _name: Option[String], private val _level: Option[Int], private val _score: Int, private val _isTurnToPlay: Boolean, private val _gridStates: Grid){
+case class Player (private val _fleet: List[Ship], private val _name: String, private val _level: Option[Int], private val _score: Int, private val _isTurnToPlay: Boolean, private val _gridStates: Grid){
   def fleet: List[Ship] = this._fleet
-  def name: Option[String] = this._name
+  def name: String = this._name
   def level: Option[Int] = this._level
   def score: Int = this._score
   def isTurnToPlay: Boolean = this._isTurnToPlay
@@ -45,17 +45,16 @@ case class Player (private val _fleet: List[Ship], private val _name: Option[Str
     }
     else numberOfShipLeft(listShip.tail, counter+1)
   }
-  //is hittable (x,y)
-  //returns either the x,y is hittable or not
-
-
-  /*def hit(x: Int, y: Int, player: Player): Player= {
-    //return the new Player with the modified fleet
-  }*/
 }
 
 object Player{
 
+  //TODO
+  //def fillGridByAIs(fleet: List[Ship], shipFormat: List[List[Int]]): List[Ship]
 
+  //TODO
+  //def targetIA1(grid: Grid): Cell
+  //def targetIA2(grid: Grid): Cell
+  //def targetIA3(grid: Grid): Cell
 
 }

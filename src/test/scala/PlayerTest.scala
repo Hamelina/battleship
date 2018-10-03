@@ -15,7 +15,7 @@ class PlayerTest extends FunSuite with DiagrammedAssertions {
     * "Hit" -> H
     * "Not tested" -> O
     */
-    var player = Player(_fleet = ship+:fleet, _name = Option("Player"), _level= None ,
+    var player = Player(_fleet = ship+:fleet, _name = "Player", _level= None ,
       _score = 0, _isTurnToPlay = false, _gridStates = Grid(List(List(Utility.OCCUPIED_STATUS,Utility.OCCUPIED_STATUS,Utility.MISSED_STATUS), List(Utility.HIT_STATUS,Utility.HIT_STATUS,Utility.NOT_TARGETED))))
 
     assert(player.isInstanceOf[Player])

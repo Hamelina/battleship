@@ -44,7 +44,7 @@ object Ship{
     */
 
   def createShipFromStartingPoint (startPoint: Cell, shipSize: Int, direction: String): Ship={
-    new Ship(_size = this.createCellsList(shipSize-1, direction, List(startPoint)).size , _cells=this.createCellsList(shipSize-1, direction, List(startPoint)))
+    new Ship(_size = this.createCellsList(shipSize, direction, List(startPoint)).size , _cells=this.createCellsList(shipSize, direction, List(startPoint)))
   }
 
   /*def createShipFromListOfCells( cellsList: List[Cell]): Ship = {
@@ -71,13 +71,13 @@ object Ship{
       list
     else{
       direction match {
-        case "U" => createCellsList (size = size-1, direction = direction, list = list.head.copy(_x= list.head.x + 1)::list)
+        case "U" => createCellsList (size = size-1, direction = direction, list = list.head.copy(_y= list.head.y + 1)::list)
 
-        case "D" => createCellsList (size = size-1, direction = direction, list = list.head.copy(_x= list.head.x-1)::list)
+        case "D" => createCellsList (size = size-1, direction = direction, list = list.head.copy(_y= list.head.y-1)::list)
 
-        case "L" => createCellsList (size = size-1, direction = direction, list = list.head.copy(_y=list.head.y-1)::list)
+        case "L" => createCellsList (size = size-1, direction = direction, list = list.head.copy(_x=list.head.x-1)::list)
 
-        case "R" => createCellsList (size = size-1, direction = direction, list = list.head.copy(_y=list.head.y+1)::list)
+        case "R" => createCellsList (size = size-1, direction = direction, list = list.head.copy(_x=list.head.x+1)::list)
       }
     }
   }

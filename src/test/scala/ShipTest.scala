@@ -25,7 +25,7 @@ class ShipTest extends FunSuite with DiagrammedAssertions {
   test(testName = "the method Ship.createShip should create an identical ship as the val ship"){
     //create ship by calling the function
     val ship2 = Ship.createShipFromStartingPoint(startPoint = Cell(1,1), shipSize = 2, direction = "R")
-    val c = Cell(1,1)::Nil
+    val c = Cell(2,1)::Cell(1,1)::Nil
     val ship1 = Ship(_size = c.size, _cells = c)
     //assert if the ship are the same
     assert(ship1.cells==ship2.cells)
@@ -85,10 +85,10 @@ class ShipTest extends FunSuite with DiagrammedAssertions {
   }
   test(testName = "test the createCellsList function "){
     val l1 = List(List(Cell(1,2), Cell(1,3)), List(Cell(4,5), Cell(4, 6)))
-    val l2 = Cell(1, 2)::Cell(1,1)::Nil
+    val l2 = Cell(2, 1)::Cell(1,1)::Nil
     val l2bis = Cell(1, 1)::Cell(1,2)::Nil
-
     val l3 = Cell(4,5) :: Cell(1,1) :: Nil
+
     assert(Ship.createCellsList(2, "R", Cell(1,1)::Nil) == l2)
     assert(Ship.createCellsList(2, "R", Cell(1,1)::Nil) != l2bis)
     assert(Ship.createCellsList(1, "R", Cell(1,1)::Nil) != l2)

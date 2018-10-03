@@ -1,12 +1,15 @@
 package game
 import player.Player
-import ship._
 
 
 case class Game( private val _player1: Player,  private val _player2: Player){
 
   def player1: Player= this._player1
   def player2: Player= this._player2
+
+  def isGameOver: Boolean= {
+    player1.hasLost || player2.hasLost
+  }
 
   /*def shoot(x: Int, y:Int): Game ={
 
@@ -15,35 +18,20 @@ case class Game( private val _player1: Player,  private val _player2: Player){
 
 object Game{
 
-  //1st player returned --> player, second--> opponent
-  /**
-    * This function returns a player who is being targeted
-    * @param opponent The player whoose square is being targeted
-    * @param x The coordinates on x-axis of the target square
-    * @param y The coordinates on y-axis of the target square
-    * @return Returns the player who has been targeted after a shoot.
-    */
-  def shoot(opponent: Player, x: Int, y: Int ): Player =
-  {
-    val ships: List[Ship] = opponent.fleet
-    val cell: List[Cell] = ships.flatMap(x => x.cells)
-    if (cell.contains(Cell(x,y))) {
-      val fleet: List[Ship] = opponent.fleet.map(e => Ship.updatedShip(Cell(x, y), e))
-      val grid: Grid = Grid.updateGrid(opponent.gridStates, x, y, Utility.HIT_STATUS)
-      println("********HIIIIIIIIIIT")
-      opponent.copy(_gridStates = grid, _fleet = fleet)
-    }
-    else{
-      println("********MISSED")
-      val grid2: Grid = Grid.updateGrid(opponent.gridStates, x, y, Utility.MISSED_STATUS)
-      opponent.copy(_gridStates = grid2)
-    }
-  }
+  val NUMBER_OF_TOTAL_ROUND: Int = 100
+
+  //TODO modify the function to print the results and write it in a CSV file
+
+
+
+
   def createPlayer(playerName: String, isTurnToPlay: Boolean): Player = {
     val fleet = Utility.askUserForShipSettings(shipFormat = Utility.NUMBER_AND_SIZE_OF_SHIPS, fleet = Nil, playerName= playerName)
-    val grid = Utility.initializeGridFromFleet(fleet = fleet, size = Grid.SIZE)
-    Player(fleet, Some(playerName), None, 0, isTurnToPlay, grid)
+    val grid = Grid.initializeGridFromFleet(fleet = fleet, size = Grid.SIZE)
+    Player(fleet,playerName, None, 0, isTurnToPlay, grid)
   }
+
+
 
   /*@tailrec
   def isOccupied(fleet: List[List[Cell]], ship: List[Cell]): Boolean = {

@@ -18,5 +18,9 @@ class CellTest extends FunSuite with DiagrammedAssertions {
     assert(Cell.isValid(5,5))
     assert(Cell.isValid(0,0))
   }
+  test("Test is a cell is contained in another list of cells"){
+    val c1 = Cell(1,2)
+    val listCell = List(Cell(1,2), Cell(2,3))
+  }
 }
 

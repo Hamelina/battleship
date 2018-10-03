@@ -1,6 +1,5 @@
 import game._
 
-
 object Main extends App{
   /*def cube(x: Int) = {
     x * x * x
@@ -35,6 +34,45 @@ object Main extends App{
   val round = Game(player1, player2)
   println("******* PLAYER 1 CREATE *******")
   println(player1)
+
+
+  /**
+    * create game with player1 and player 2
+    * val gameRecord = Nil
+    * mainloop(Option[game], gameRecords)
+    *
+    * mainLoop(gameState: Game, gameRecords)
+    *   console.clear
+    *   if(game){
+      *   if gameState.player1.hasLost || gameState.player2.hasLost (end of game)
+      *     printGameOver
+      *     continue : ReadLine (Do you still want to play ? )
+      *     val record: GameRecords;
+      *     if gameState.player1.hasLost{
+      *       record = Game(gameState.player2.copy(score=player2.score+1), gameState.player1) +: gamerecord
+      *       }
+      *     else {
+      *       record = Game(player1.copy(score=player1.score+1), gameState.player2) +: gamerecord
+      *     }
+      *     if (continue){
+      *       mainLoop(None, record)
+      *     }
+      *     else prinln("Partie over", player1.name won .../...)
+      *  else{
+    *       game.renderGridToUser
+      *     val newGame: Game = Utility.askUserForShoot(gameState)
+    *       Console.clear
+    *       renderGridToUser
+    *       mainloop(newGame, gameRecords)
+    *     }
+    *
+    *
+    *   }
+    */
+
+
+
+
 
   /*Init 2 grid
   *

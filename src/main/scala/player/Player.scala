@@ -1,6 +1,8 @@
 package player
-import game.Grid
+import game._
 import ship._
+
+import scala.annotation.tailrec
 
 
 
@@ -14,13 +16,35 @@ import ship._
   * @param _gridStates A grid that corresponds to a list of lists of String that describes the state of each cell (is used to display)
   */
 case class Player (private val _fleet: List[Ship], private val _name: Option[String], private val _level: Option[Int], private val _score: Int, private val _isTurnToPlay: Boolean, private val _gridStates: Grid){
-  def fleet: List[Any] = this._fleet
+  def fleet: List[Ship] = this._fleet
   def name: Option[String] = this._name
   def level: Option[Int] = this._level
   def score: Int = this._score
   def isTurnToPlay: Boolean = this._isTurnToPlay
   def gridStates: Grid = this._gridStates
 
+  /**
+    * This function tells if this player has lost of not
+    * @return Boolean equal to true if this player has lost, otherwise it returns false
+    */
+  def hasLost: Boolean = {
+    this.numberOfShipLeft(fleet, 0)==Utility.NB_SHIP
+  }
+  /**
+    * This function returns the number of ships left.
+    * @param listShip The initial list of ships that one wants to know the number of ships left.
+    * @param counter The number of ship which have not been sunk yet.
+    * @return The number of ship which are not sunk yet.
+    */
+  @tailrec
+  private def numberOfShipLeft(listShip: List[Ship], counter: Int): Int = {
+    if (listShip.isEmpty)
+      counter
+    else if (listShip.head.isSunk) {
+      numberOfShipLeft(listShip.tail, counter)
+    }
+    else numberOfShipLeft(listShip.tail, counter+1)
+  }
   //is hittable (x,y)
   //returns either the x,y is hittable or not
 
@@ -28,4 +52,10 @@ case class Player (private val _fleet: List[Ship], private val _name: Option[Str
   /*def hit(x: Int, y: Int, player: Player): Player= {
     //return the new Player with the modified fleet
   }*/
+}
+
+object Player{
+
+
+
 }

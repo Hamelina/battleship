@@ -17,8 +17,18 @@ case class Grid (private val _gridStates: List[List[String]]){
 }
 
 object Grid{
-  val limitX: Int = Utility.GRID_LIMIT_X
-  val limitY : Int= Utility.GRID_LIMIT_Y
+  val SIZE = 10
+  val limitX: Int = this.SIZE-1
+  val limitY : Int= this.SIZE-1
+  val NUMBER_OF_SHIP = 6
+
+  def updateGrid(grid: Grid, x: Int, y: Int, newStatus: String): Grid = {
+    val list = grid.gridStates
+    grid.copy(_gridStates = list.updated(x, list.apply(x).updated(y, newStatus)))
+  }
+
 }
+
+
 
 

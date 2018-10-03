@@ -8,7 +8,7 @@ class PlayerTest extends FunSuite with DiagrammedAssertions {
     var cell1 = Cell(0, 0)
     var cell2 = Cell( 1, 2)
     var list = List(cell1, cell2)
-    var ship = Ship(_typeName = "Carrier", _cells = list)
+    var ship = Ship(_size = list.size, _cells = list)
     var fleet = Nil
     /*"Occupied" -> X
     * "Miss" -> T
@@ -20,5 +20,8 @@ class PlayerTest extends FunSuite with DiagrammedAssertions {
 
     assert(player.isInstanceOf[Player])
   }
+
+  //TODO : tester hasLost
+  //TODO : tester numberOfShipLeft
 }
 

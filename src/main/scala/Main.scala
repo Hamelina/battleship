@@ -10,20 +10,22 @@ object Main extends App {
 
   def gameBuilder: Unit =
     Utility.askPlayerMode() match {
-      case "C" => {
+      case "Human mode" => {
         val player1Name: String = Utility.askForName("first")
         val player2Name: String = Utility.askForName("second")
         val player1: Player = Player(Nil, player1Name, None, 0, _isTurnToPlay = true, Grid(Nil))
         val player2: Player = Player(Nil, player1Name, None, 0, _isTurnToPlay = false, Grid(Nil))
         mainLoop(None, player1, player2, Game.NUMBER_OF_TOTAL_ROUND)
       }
-      case "AI" => {
+      case "AI mode" => {
         val player1Name: String = Utility.askForName("first")
         val aiName: String = "AI" + Utility.askForAILevel()
         val player1: Player = Player(Nil, player1Name, None, 0, _isTurnToPlay = true, Grid(Nil))
         val player2: Player = Player(Nil, aiName, Some(aiName.substring(2, 3).toInt), 0, _isTurnToPlay =  false, Grid(Nil))
         mainLoop(None, player1, player2, Game.NUMBER_OF_TOTAL_ROUND)
       }
+        //add here the little program that runs AI vs AI
+      case _ => println("Something went wrong. The source code must have been changed")
     }
 
 

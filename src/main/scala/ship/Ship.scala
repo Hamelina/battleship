@@ -111,7 +111,7 @@ object Ship{
     * @param l1 A list of cell(s)
     * @param l2 A list of cell(s)
     * @return A boolean equals to true if l1 contain at least one element of l2, otherwise it returns false
-    * Contraint: l2 must be shorter than or equal to l1
+    * Constraint: l2 must be shorter than or equal to l1
     */
   @tailrec
   def l1containsl2(l1: List[Cell], l2: List[Cell]): Boolean ={

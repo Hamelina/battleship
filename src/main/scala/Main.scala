@@ -6,9 +6,9 @@ object Main extends App {
 
   println("Welcome to you ! You have started the most enjoyable game ever: the battleship !")
 
-  gameBuilder
+  gameBuilder()
 
-  def gameBuilder: Unit =
+  def gameBuilder(): Unit =
     Utility.askPlayerMode() match {
       case "Human mode" => {
         val player1Name: String = Utility.askForName("first")
@@ -19,34 +19,35 @@ object Main extends App {
       }
       case "AI mode" => {
         val player1Name: String = Utility.askForName("first")
-        val aiName: String = "AI" + Utility.askForAILevel()
+        val AIlevel: String = Utility.askForAILevel()
+        val aiName: String = "AI" + AIlevel
         val player1: Player = Player(Nil, player1Name, None, 0, _isTurnToPlay = true, Grid(Nil))
-        val player2: Player = Player(Nil, aiName, Some(aiName.substring(2, 3).toInt), 0, _isTurnToPlay =  false, Grid(Nil))
+        print(aiName)
+        print(AIlevel.toInt)
+        val player2: Player = Player(Nil, aiName, Some(AIlevel.toInt), 0, _isTurnToPlay =  false, Grid(Nil))
         mainLoop(None, player1, player2, Game.NUMBER_OF_TOTAL_ROUND)
       }
         //add here the little program that runs AI vs AI
       case _ => println("Something went wrong. The source code must have been changed")
     }
 
-
+//TODO changer les println
   def mainLoop(gameState: Option[Game], looser: Player, winner: Player, nbRoundsToPlay: Int): Unit = {
     Utility.clearScreen()
     if (nbRoundsToPlay == 0) {
       println("Game finished")
-      val finalGameState = Game(winner, looser)
       //TODO implement writeResultsIntoCsvFile function in game
-      //finalGameState.writeResultsIntoCsvFile("aiproof")
+      //gameState.getOrElse(Game(looser, winner).writeResultsIntoCsvFile("aiproof")
       println("Score: " + winner.name + ": " + winner.score + " VS " + looser.name + ": " + looser.score)
     }
     else {
-      var newGameState: Option[Game] = gameState
-      if (gameState.isEmpty) {
-        newGameState = Utility.initializeRound(looser: Player, winner: Player)
-      }
-      val util = Utility(newGameState.get)
-
+      val util: Utility = Utility(gameState.getOrElse(Utility.initializeRound(looser: Player, winner: Player)))
+      /*val util: Utility = gameState match {
+        case None => Utility(Utility.initializeRound(looser: Player, winner: Player).get)
+        case _ => Utility(gameState.get)
+      }*/
       //Ask the players to shoot
-      val currentGameState = util.askPlayersToShoot
+      val currentGameState: Game = util.askPlayerToShoot()
 
       //check is gameOver:
       if (currentGameState.isGameOver) {

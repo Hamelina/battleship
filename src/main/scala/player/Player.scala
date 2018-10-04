@@ -49,6 +49,8 @@ case class Player (private val _fleet: List[Ship], private val _name: String, pr
 
 object Player{
 
+
+
   //TODO
   //def fillGridByAIs(fleet: List[Ship], shipFormat: List[List[Int]]): List[Ship]
 
@@ -56,5 +58,6 @@ object Player{
   //def targetIA1(grid: Grid): Cell
   //def targetIA2(grid: Grid): Cell
   //def targetIA3(grid: Grid): Cell
+
 
 }

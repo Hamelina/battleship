@@ -1,11 +1,14 @@
 package game
 import player.Player
 
+import scala.util.Random
 
-case class Game( private val _player1: Player,  private val _player2: Player){
+
+case class Game( private val _player1: Player,  private val _player2: Player, private val _random: Random){
 
   def player1: Player= this._player1
   def player2: Player= this._player2
+  def random: Random = this._random
 
   def isGameOver: Boolean= {
     player1.hasLost || player2.hasLost

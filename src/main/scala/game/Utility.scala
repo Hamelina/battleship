@@ -34,6 +34,7 @@ object Utility {
   val CRUISER: (Int, Int) = (3, 1)
   val SUBMARINE: (Int, Int) = (4, 1)
   val DESTROYER: (Int, Int) = (5, 1)
+  val FILENAME: String = "./ai_proof.csv"
   //
 
   @tailrec
@@ -283,19 +284,19 @@ object Utility {
   }
 
   def askPlayerToShoot(game: Game): Game ={
-    Display.printAskForTarget(game.player1.name)
+
+    /*Display.clearScreen
+    Display.printAnnounceMyGrid
+    Display.printMyGrid(game)
+    Display.printSeparator
+    Display.printAnnounceOpponentGrid
+    Display.printOpponentGrid(game)*/
     if (game.player1.isTurnToPlay) {
       game.player1.level match {
         case  None => {
-          Display.clearScreen
-          Display.printAnnounceMyGrid
-          Display.printMyGrid(game)
-          Display.printSeparator
-          Display.printAnnounceOpponentGrid
-          Display.printOpponentGrid(game)
+          Display.printAskForTarget(game.player1.name)
           val cell: Cell = Utility.askUserToShoot(game.player1.name)
           val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
-          Display.clearScreen
           val player2: Player = game.player1.copy(_isTurnToPlay = false)
           game.copy(_player1 = player1, _player2 = player2)
         }
@@ -314,12 +315,7 @@ object Utility {
       //it ut to the player2 to shoot
       game.player2 level match {
         case  None => {
-          Display.clearScreen
-          Display.printAnnounceMyGrid
-          Display.printMyGrid(game)
-          Display.printSeparator
-          Display.printAnnounceOpponentGrid
-          Display.printOpponentGrid(game)
+          Display.printAskForTarget(game.player2.name)
           val cell: Cell = Utility.askUserToShoot(game.player2.name)
           val player1: Player = Utility.shoot(game.player1, cell.x, cell.y)
           Display.clearScreen
@@ -364,12 +360,12 @@ object Utility {
           val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
           Display.clearScreen
           val player2: Player = game.player1.copy(_isTurnToPlay = false)
-          game.copy(_player1 = player1, _player2 = player2, _random = game.random)
+          game.copy(_player1 = player1, _player2 = player2)
         }
 
         //if it has been targeted
         case _ => {
-          this.askAI2ToShoot(game.copy(_random = game.random))
+          this.askAI2ToShoot(game.copy())
         }
       }
     }
@@ -389,7 +385,7 @@ object Utility {
 
         //if the square have already been targeted or if the player have already hit this square
         if (haveBeenTargeted(game.player2.gridStates, cellToTarget) || game.player1.hit.contains(cellToTarget)){
-          askAI3ToShoot(game.copy(_random = game.random))
+          askAI3ToShoot(game.copy())
         }
         else{
 
@@ -405,19 +401,19 @@ object Utility {
               if (cellToTarget.x==Grid.SIZE-1){
 
                 //nextime check directly to the left
-                  game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget :: ai.hit, _testedDirection = List("Right", "Left"), _isTurnToPlay = false), _random = game.random)
+                  game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget :: ai.hit, _testedDirection = List("Right", "Left"), _isTurnToPlay = false))
 
 
                 }
               else{
                 //explore the right side of the targeted
-                game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget::ai.hit, _testedDirection = List("Right"), _isTurnToPlay = false), _random = game.random)
+                game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget::ai.hit, _testedDirection = List("Right"), _isTurnToPlay = false))
               }
             }
             //so ship founded
             case _ => {
               //square missed, choose randomly next time
-              game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = Nil), _random = game.random)
+              game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = Nil))
             }
           }
           newGame
@@ -430,7 +426,7 @@ object Utility {
       case 1 => {
         val cellToTarget: Cell = Cell(ai.hit.head.x+1, ai.hit.head.y)
         //the square on the right of the target have already been tested so --> ask with with direction left testedDirection
-        if (haveBeenTargeted(game.player2.gridStates, cellToTarget)){
+        if (haveBeenTargeted(game.player2.gridStates, cellToTarget) && game.player1.hit.contains(cellToTarget)){
           askAI3ToShoot(game.copy(_player1 = ai.copy(_testedDirection = List("Right", "Left"))))
         }
         else {
@@ -443,10 +439,10 @@ object Utility {
             case Utility.HIT_STATUS =>{
 
               if(cellToTarget.x==Grid.SIZE-1){
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = List("Right", "Left"), _hit = cellToTarget::ai.hit), _random = game.random)
+                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = List("Right", "Left"), _hit = cellToTarget::ai.hit))
               }
               else{
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = List("Right"), _hit = cellToTarget::ai.hit), _random = game.random)
+                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = List("Right"), _hit = cellToTarget::ai.hit))
               }
             }
             case _ => {
@@ -457,18 +453,18 @@ object Utility {
                 //next time target directly up
                 if (cellToTarget.y==0){
                   //check directly down the square
-                  game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget :: ai.hit, _testedDirection = List("Right","Left", "Up", "Down"), _isTurnToPlay = false), _random = game.random)
+                  game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget :: ai.hit, _testedDirection = List("Right","Left", "Up", "Down"), _isTurnToPlay = false))
                 }
 
                   //goes directly down
                 else {
-                  game.copy(_player1 = player1, _player2 = ai.copy(_testedDirection = List("Right","Left", "Up"), _isTurnToPlay = false), _random = game.random)
+                  game.copy(_player1 = player1, _player2 = ai.copy(_testedDirection = List("Right","Left", "Up"), _isTurnToPlay = false))
                 }
 
               }
               else{
                 //next time turn to the right again
-                game.copy(_player1 = player1, _player2 = ai.copy(_testedDirection = List("Right","Left"), _isTurnToPlay = false), _random = game.random)
+                game.copy(_player1 = player1, _player2 = ai.copy(_testedDirection = List("Right","Left"), _isTurnToPlay = false))
 
               }
             }
@@ -483,7 +479,7 @@ object Utility {
         val cellToTarget: Cell = Cell(ai.hit.head.x-1, ai.hit.head.y)
 
         //if the square on the left of the target have already been tested so --> ask with an empty testedDirection
-        if (haveBeenTargeted(game.player2.gridStates, cellToTarget)){
+        if (haveBeenTargeted(game.player2.gridStates, cellToTarget) && game.player1.hit.contains(cellToTarget)){
           askAI3ToShoot(game.copy(_player1 = ai.copy(_testedDirection = List("Right", "Left", "Up"))))
         }
         else {
@@ -537,7 +533,7 @@ object Utility {
         val cellToTarget: Cell = Cell(ai.hit.head.x, ai.hit.head.y-1)
 
         //if the square on the left of the target have already been tested so --> ask with an empty testedDirection
-        if (haveBeenTargeted(game.player2.gridStates, cellToTarget)){
+        if (haveBeenTargeted(game.player2.gridStates, cellToTarget) && game.player1.hit.contains(cellToTarget)){
           askAI3ToShoot(game.copy(_player1 = ai.copy(_testedDirection = List("Right", "Left", "Up", "Down"))))
         }
         else {
@@ -575,7 +571,7 @@ object Utility {
         val cellToTarget: Cell = Cell(ai.hit.head.x, ai.hit.head.y+1)
 
         //if the square on the left of the target have already been tested so --> ask with an empty testedDirection
-        if (haveBeenTargeted(game.player2.gridStates, cellToTarget)){
+        if (haveBeenTargeted(game.player2.gridStates, cellToTarget) && game.player1.hit.contains(cellToTarget)){
           askAI3ToShoot(game.copy(_player1 = ai.copy(_testedDirection = Nil)))
         }
         else {

@@ -14,8 +14,12 @@ object Display{
     print("\n Welcome to you ! You have started the most enjoyable game ever: the battleship !")
   }
 
+  def printAskForNumberOfRound: Unit = {
+    print("\n How many round do you want to play ? \n" )
+  }
+
   def printAskForTarget(playerName: String): Unit ={
-    print(s"\n $playerName it is your time to play. Please enter the targeted square in the following format: x y \n")
+    print(s"\n $playerName it is your turn to play. Please enter the targeted square in the following format: x y \n")
   }
 
   def clearScreen: Unit = {print("\u001b[2J")}
@@ -74,6 +78,9 @@ object Display{
   }
   def printWrongInput: Unit = {
     print("\n The input is wrong!")
+  }
+  def printEndOfGame(result: String): Unit = {
+    print(s"s\n ****Game finished**** \n $result")
   }
 
 

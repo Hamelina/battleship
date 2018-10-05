@@ -1,7 +1,4 @@
 package game
-import java.io.{BufferedWriter, FileWriter}
-
-import au.com.bytecode.opencsv.CSVWriter
 import player.Player
 
 import scala.util.Random
@@ -17,18 +14,7 @@ case class Game( private val _player1: Player,  private val _player2: Player, pr
     player1.hasLost || player2.hasLost
   }
 
-  def writeResultsInCsv: Unit= {
-    val outputFile = new BufferedWriter(new FileWriter("./aiproof.csv"))
-    val csvWriter = new CSVWriter(outputFile)
-    val csvSchema = Array("AI Name", "score", "AI Name2", "score2")
 
-
-    AI Name; score; AI Name2; score2
-    AI Level Beginner; X1; Level Medium; Y1
-    AI Level Beginner;X2;Level Hard;Y2
-    AI Medium;X3;Level Hard;Y3
-
-  }
 
 }
 

@@ -29,6 +29,23 @@ object Main extends App {
         mainLoop(None, player1, player2, Game.NUMBER_OF_TOTAL_ROUND, new scala.util.Random())
       }
         //add here the little program that runs AI vs AI
+      case "AI vs AI" => {
+        val ai1: Player = Player(Nil, "AI Level Beginner", Some(1), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Nil)
+        val ai2: Player = Player(Nil, "AI Level Medium", Some(2), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Nil)
+        val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Nil)
+
+        //A1 vs AI2
+        mainLoop(None, ai1.copy(_isTurnToPlay = true), ai2, Game.NUMBER_OF_TOTAL_ROUND, new scala.util.Random())
+
+        //AI2 vs AI3
+        mainLoop(None, ai2.copy(_isTurnToPlay = true), ai3, Game.NUMBER_OF_TOTAL_ROUND, new scala.util.Random())
+
+
+        //AI1 vs AI3
+        mainLoop(None, ai1.copy(_isTurnToPlay = true), ai3, Game.NUMBER_OF_TOTAL_ROUND, new scala.util.Random())
+
+      }
+
       case _ => Display.printSomethingWentWrong
     }
 
@@ -39,6 +56,7 @@ object Main extends App {
       println("Game finished")
       //TODO implement writeResultsIntoCsvFile function in game
       //gameState.getOrElse(Game(looser, winner).writeResultsIntoCsvFile("aiproof")
+      val gameRecord: Game = Game(winner, looser, random)
       Display.printScore(winner.name, winner.score, looser.name, looser.score)
     }
     else {

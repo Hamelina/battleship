@@ -15,7 +15,7 @@ object Display{
   }
 
   def printAskForTarget(playerName: String): Unit ={
-    print(s"\n $playerName it is your time to play. Please enter the targeted square in the following format: x y")
+    print(s"\n $playerName it is your time to play. Please enter the targeted square in the following format: x y \n")
   }
 
   def clearScreen: Unit = {print("\u001b[2J")}
@@ -29,39 +29,45 @@ object Display{
   }
 
   def printFormatNotValid: Unit = {
-    print("\n The format is not right, please try again !")
+    print("\n The format is not right, please try again ! \n")
   }
 
   def printStartPositionNotValid: Unit = {
-    print("\n These coordinates are not valid, either the coordinates do not fit into the grid or a ship is already on the involved square(s). Please try again. ")
+    print("\n These coordinates are not valid, either the coordinates do not fit into the grid or a ship is already on the involved square(s). Please try again: \n")
   }
 
   def printCoordinatesNotValid: Unit = {
-    print("\n The coordinates are not valid. Please try again")
+    print("\n The coordinates are not valid. Please try again: \n")
 
   }
 
   def printCoodinatesNotCorrect: Unit = {
-    print("\n Your input are incorrect, please try again")
+    print("\n Your input are incorrect, please try again: \n")
   }
   def printAskName(order: String): Unit = {
-    print(s"\n Please enter the name of the $order player")
+    print(s"\n Please enter the name of the $order player: \n")
   }
   def printAskLevel: Unit = {
-    print("\n Please enter the level of the AI you want to challenge: either '1' or '2' or '3': ")
+    print("\n Please enter the level of the AI you want to challenge : \n")
+    print("\n   1. You against AI Level Beginner")
+    print("\n   2. You against AI Level Medium")
+    print("\n   3. You against AI Level Hard \n")
   }
   def printAskMode: Unit = {
-    print("\n On which mode do you want to play ? Against an AI (AI) or against a Humain (H) ?")
+    print("\n On which mode do you want to play ? Please press the number corresponding to it.")
+    print("\n   1. You against an AI")
+    print("\n   2. You against an Humain")
+    print("\n   3. Ais battleship \n")
   }
   def printLevelIncorrect: Unit = {
-    print("\n Incorrect input, it should be either '1' or '2' or '3'. Please try again")
+    print("\n Incorrect input, it should be either '1' or '2' or '3'. Please try again \n")
   }
   def printModeIncorrect: Unit = {
-    print("\n Incorrect input, it should be either 'AI' for AI or 'H' Human. Please try again")
+    print("\n Incorrect input, it should be either 'AI' for AI or 'H' Human. Please try again \n")
   }
 
   def printAskStartingPoint(size: Int): Unit = {
-    print(s"\n Please enter the starting point on x-axis (0-0), y-axis(0-9) and the direction (U: up, D: down, R: right, L:left) of the ship of size $size , like so: x y direction => ")
+    print(s"\n Please enter the starting point on x-axis (0-0), y-axis(0-9) and the direction (U: up, D: down, R: right, L:left) of the ship of size $size , like so: x y direction : \n")
   }
   def printShipNotValid: Unit = {
     print("\n The ship does not fit to the grid")

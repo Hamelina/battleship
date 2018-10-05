@@ -246,8 +246,9 @@ object Utility {
     Display.printAskMode
     val mode = Input.mode
     mode match {
-      case "AI" => "AI mode"
-      case "H" => "Human mode"
+      case "1" => "AI mode"
+      case "2" => "Human mode"
+      case "3" => "AI vs AI"
       case _ => {
         Display.printModeIncorrect
         askPlayerMode

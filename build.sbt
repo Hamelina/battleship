@@ -7,5 +7,7 @@ lazy val battleship = (project in file("."))
   .settings(
     name := "battleship",
     libraryDependencies += scalaTest % Test,
+    libraryDependencies += opencsv,
   )
+val opencsv = "au.com.bytecode" % "opencsv" % "2.4"
 

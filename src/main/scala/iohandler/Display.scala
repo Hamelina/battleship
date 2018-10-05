@@ -121,7 +121,7 @@ object Display{
     * "Not tested" yet -> O Blue
     */
   def printOpponentGrid(game: Game): Unit ={
-    println("  A B C D E F G H I J")
+    println("   A B C D E F G H I J")
     if (game.player1.isTurnToPlay){
       //printByLine()
       stringByLine(grid2 = game.player2.gridStates.copy(_gridStates = game.player2.gridStates.copy().tail), line = game.player2.gridStates.copy().head, result = "0 " )

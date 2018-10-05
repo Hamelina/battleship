@@ -31,7 +31,7 @@ object Game{
   def createPlayer(playerName: String, isTurnToPlay: Boolean): Player = {
     val fleet = Utility.askUserForShipSettings(shipFormat = Utility.NUMBER_AND_SIZE_OF_SHIPS, fleet = Nil, playerName= playerName)
     val grid = Grid.initializeGridFromFleet(fleet = fleet, size = Grid.SIZE)
-    Player(fleet,playerName, None, 0, isTurnToPlay, grid)
+    Player(fleet,playerName, None, 0, isTurnToPlay, grid, Nil, Nil)
   }
 
 

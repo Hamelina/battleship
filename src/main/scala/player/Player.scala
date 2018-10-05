@@ -15,7 +15,7 @@ import scala.annotation.tailrec
   * @param _isTurnToPlay A boolean that states if it is the player's turn to play. At the beginning of the game, it is always false.
   * @param _gridStates A grid that corresponds to a list of lists of String that describes the state of each cell (is used to display)
   */
-case class Player (private val _fleet: List[Ship], private val _name: String, private val _level: Option[Int], private val _score: Int, private val _isTurnToPlay: Boolean, private val _gridStates: Grid){
+case class Player (private val _fleet: List[Ship], private val _name: String, private val _level: Option[Int], private val _score: Int, private val _isTurnToPlay: Boolean, private val _gridStates: Grid, private val _hit: List[Cell], private val _testedDirection: List[String]){
   def fleet: List[Ship] = this._fleet
   def name: String = this._name
   def level: Option[Int] = this._level
@@ -23,12 +23,17 @@ case class Player (private val _fleet: List[Ship], private val _name: String, pr
   def isTurnToPlay: Boolean = this._isTurnToPlay
   def gridStates: Grid = this._gridStates
 
+  //memory of the number of hit(for AI3)
+  def hit: List[Cell] = _hit
+
+  //memory of the square tested for this direction
+  def testedDirection: List[String] = _testedDirection
   /**
     * This function tells if this player has lost of not
     * @return Boolean equal to true if this player has lost, otherwise it returns false
     */
   def hasLost: Boolean = {
-    this.numberOfShipLeft(fleet, 0)==Utility.NB_SHIP
+    this.numberOfShipLeft(fleet, 0)==0
   }
   /**
     * This function returns the number of ships left.

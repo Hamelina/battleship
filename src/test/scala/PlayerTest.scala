@@ -27,7 +27,7 @@ class PlayerTest extends FunSuite with DiagrammedAssertions {
     val ship = Ship(_size = list.size, _cells = list)
     val fleet: List[Ship] = ship::Nil
     val grid: Grid = Grid.initializeGridFromFleet(fleet, 5)
-    val player: Player = Player(_fleet = fleet, _name = "Test", _level = None, _score = 0, _isTurnToPlay = true, _gridStates = grid, _targeted = Nil, _currentDirection = None, _random = None, _lastHit = None)
+    val player: Player = Player(_fleet = fleet, _name = "Test", _level = None, _score = 0, _isTurnToPlay = true, _gridStates = grid, _toTarget = Nil, _random = None)
 
     val grid2: Grid = Grid.updateGrid(grid=grid, x=cell1.x, y=cell1.y, "hit")
     assert(Utility.shoot(player, cell1.x, cell1.y).gridStates==grid2)

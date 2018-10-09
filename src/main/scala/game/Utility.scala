@@ -209,12 +209,12 @@ object Utility {
   def initializeRound(looser: Player, winner: Player): Game = {
     val listShipPlayer1: List[Ship] = Utility.askForShipSettings(NUMBER_AND_SIZE_OF_SHIPS, Nil, looser)
     val gridPlayer1: Grid = Grid.initializeGridFromFleet(listShipPlayer1, Grid.SIZE)
-    val player1: Player = looser.copy(_fleet = listShipPlayer1, _gridStates = gridPlayer1, _isTurnToPlay = true, _currentDirection = None, _targeted = Nil)
+    val player1: Player = looser.copy(_fleet = listShipPlayer1, _gridStates = gridPlayer1, _isTurnToPlay = true, _toTarget = Nil)
 
 
     val listShipPlayer2: List[Ship] = Utility.askForShipSettings(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, winner)
     val gridPlayer2: Grid = Grid.initializeGridFromFleet(listShipPlayer2, Grid.SIZE)
-    val player2: Player = winner.copy(_fleet = listShipPlayer2, _gridStates = gridPlayer2, _isTurnToPlay=false, _currentDirection = None, _targeted = Nil)
+    val player2: Player = winner.copy(_fleet = listShipPlayer2, _gridStates = gridPlayer2, _isTurnToPlay=false,  _toTarget = Nil)
 
     Game(player1, player2)
   }
@@ -376,14 +376,10 @@ object Utility {
     val x = r.nextInt(Grid.SIZE)
     val y = r.nextInt(Grid.SIZE)
 
-    println("AI 3 attaque")
-    println("x: "+x+ "; y =" + y)
-    println("Cell: "+ Cell(x,y))
     haveBeenTargeted(game.player2.gridStates, Cell(x, y)) match {
       //if it was not yet targeted
       case false =>{
         val cell: Cell = Cell(x,y)
-        println("IA 2 : " + cell)
         val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
         val player2: Player = game.player1.copy(_isTurnToPlay = false, _random = Some(r))
         game.copy(_player1 = player1, _player2 = player2)
@@ -404,7 +400,7 @@ object Utility {
   @tailrec
   def askAI3ToShoot(game: Game): Game = {
     //player1 is considered as AI3
-    if (game.player1.targeted.isEmpty) {
+    if (game.player1.toTarget.isEmpty) {
       val x = game.player1.random.get.nextInt(Grid.SIZE)
       val y = game.player1.random.get.nextInt(Grid.SIZE)
       if (Utility.haveBeenTargeted(game.player2.gridStates, Cell(x, y))) {
@@ -412,22 +408,22 @@ object Utility {
       }
       else {
         val toTarget: List[Cell] = Utility.filterValidCells(generatePotentialCells(x, y), Nil)
-        askAI3ToShoot(game.copy(_player1 = game.player1.copy(_targeted = toTarget)))
+        askAI3ToShoot(game.copy(_player1 = game.player1.copy(_toTarget = toTarget)))
       }
     }
     else {
-      Utility.isHit(game.player2.fleet, game.player1.targeted.head) match {
+      Utility.isHit(game.player2.fleet, game.player1.toTarget.head) match {
         case true => {
-          askAI3ToShoot(game.copy(_player1 = game.player1.copy(_targeted = game.player1.targeted.tail)))
+          askAI3ToShoot(game.copy(_player1 = game.player1.copy(_toTarget = game.player1.toTarget.tail)))
         }
         case _ => {
-          val player1 = shoot(game.player2, game.player1.targeted.head.x, game.player1.targeted.head.y)
-          player1.gridStates.gridStates(game.player1.targeted.head.y)(game.player1.targeted.head.x) match {
+          val player1 = shoot(game.player2, game.player1.toTarget.head.x, game.player1.toTarget.head.y)
+          player1.gridStates.gridStates(game.player1.toTarget.head.y)(game.player1.toTarget.head.x) match {
             case Utility.HIT_STATUS => {
-              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail))//:::Utility.filterValidCells(generatePotentialCells(game.player1.targeted.head.x, game.player1.targeted.head.y),Nil)))
+              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _toTarget = game.player1.toTarget.tail:::Utility.filterValidCells(generatePotentialCells(game.player1.toTarget.head.x, game.player1.toTarget.head.y),Nil)))
             }
             case _ => {
-              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail))
+              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _toTarget = game.player1.toTarget.tail))
             }
           }
         }

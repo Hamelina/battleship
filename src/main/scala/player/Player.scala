@@ -16,7 +16,7 @@ import scala.util.Random
   * @param _isTurnToPlay A boolean that states if it is the player's turn to play. At the beginning of the game, it is always false.
   * @param _gridStates A grid that corresponds to a list of lists of String that describes the state of each cell (is used to display)
   */
-case class Player (private val _fleet: List[Ship], private val _name: String, private val _level: Option[Int], private val _score: Int, private val _isTurnToPlay: Boolean, private val _gridStates: Grid, private val _targeted: List[Cell], private val _currentDirection: Option[String], private val _random: Option[Random], _lastHit: Option[Cell]) {
+case class Player (private val _fleet: List[Ship], private val _name: String, private val _level: Option[Int], private val _score: Int, private val _isTurnToPlay: Boolean, private val _gridStates: Grid, private val _toTarget: List[Cell], private val _random: Option[Random]) {
   def fleet: List[Ship] = this._fleet
 
   def name: String = this._name
@@ -32,12 +32,8 @@ case class Player (private val _fleet: List[Ship], private val _name: String, pr
   def random: Option[Random] = this._random
 
   //memory of the number of hit(for AI3)
-  def targeted: List[Cell] = this._targeted
+  def toTarget: List[Cell] = this._toTarget
 
-  //memory of the square tested for this direction
-  def currentDirection: Option[String] = this._currentDirection
-
-  def lastHit: Option[Cell] = this._lastHit
 
   /**
     * This function tells if this player has lost of not

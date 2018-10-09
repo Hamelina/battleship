@@ -21,8 +21,8 @@ object Main extends App {
       case "Human mode" => {
         val player1Name: String = Utility.askForName("first")
         val player2Name: String = Utility.askForName("second")
-        val player1: Player = Player(Nil, player1Name, None, 0, _isTurnToPlay = true, Grid(Nil), Nil, None, None, None)
-        val player2: Player = Player(Nil, player2Name, None, 0, _isTurnToPlay = false, Grid(Nil), Nil, None, None, None)
+        val player1: Player = Player(Nil, player1Name, None, 0, _isTurnToPlay = true, Grid(Nil), Nil, None)
+        val player2: Player = Player(Nil, player2Name, None, 0, _isTurnToPlay = false, Grid(Nil), Nil, None)
         //ask user for number of round
         Display.printAskForNumberOfRound
         val nbRound: Int = Input.getNumberOfRound.toInt
@@ -33,9 +33,9 @@ object Main extends App {
         val r1 = new Random
         val r2 = new Random
         val r3 = new Random
-        val ai1: Player = Player(Nil, "AI Level Beginner", Some(1), 0, _isTurnToPlay =  false, Grid(Nil), Nil, None, Some(r1), None)
-        val ai2: Player = Player(Nil, "AI Level Medium", Some(2), 0, _isTurnToPlay =  false, Grid(Nil), Nil, None, Some(r2), None)
-        val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, None, Some(r3), None)
+        val ai1: Player = Player(Nil, "AI Level Beginner", Some(1), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r1))
+        val ai2: Player = Player(Nil, "AI Level Medium", Some(2), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r2))
+        val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r3))
 
         //A1 vs AI2
         val records1: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai2, Utility.NUMBER_OF_TOTAL_ROUND)
@@ -57,9 +57,9 @@ object Main extends App {
         val r1 = new Random
         val r2 = new Random
         val r3 = new Random
-        val ai1: Player = Player(Nil, "AI Level Beginner", Some(1), 0, _isTurnToPlay =  false, Grid(Nil), Nil, None, Some(r1), None)
-        val ai2: Player = Player(Nil, "AI Level Medium", Some(2), 0, _isTurnToPlay =  false, Grid(Nil), Nil, None, Some(r2), None)
-        val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, None, Some(r3), None)
+        val ai1: Player = Player(Nil, "AI Level Beginner", Some(1), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r1))
+        val ai2: Player = Player(Nil, "AI Level Medium", Some(2), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r2))
+        val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r3))
 
         //A1 vs AI2
         val records1: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai2, Utility.NUMBER_OF_TOTAL_ROUND)

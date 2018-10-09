@@ -31,7 +31,7 @@ object Display{
   /**
     *Clears the screen.
     */
-  def clearScreen: Unit = {print("\\033[H\\033[2J")}
+  def clearScreen: Unit = {print("\\u001b[2J")}
 
 
   /**

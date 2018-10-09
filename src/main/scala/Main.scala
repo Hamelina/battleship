@@ -30,45 +30,25 @@ object Main extends App {
         Display.printEndOfGame(score)
       }
       case "AI mode" => {
-        val r1 = new Random
-        val r2 = new Random
-        val r3 = new Random
-        val ai1: Player = Player(Nil, "AI Level Beginner", Some(1), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r1))
-        val ai2: Player = Player(Nil, "AI Level Medium", Some(2), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r2))
-        val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r3))
+        val player1Name: String = Utility.askForName("first")
+        val AIlevel: String = Utility.askForAILevel()
+        val aiName: String = "AI" + AIlevel
+        val player1: Player = Player(Nil, player1Name, None, 0,  _isTurnToPlay = true, Grid(Nil), Nil, None)
+        val player2: Player = Player(Nil, aiName, Some(AIlevel.toInt), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(new Random()))
+        val score = mainLoop(None, player1, player2, Game.NUMBER_OF_TOTAL_ROUND)
+        Display.printEndOfGame(score)
 
-        //A1 vs AI2
-        val records1: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai2, Utility.NUMBER_OF_TOTAL_ROUND)
-
-        //AI1 vs AI3
-        val records2: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai3, Utility.NUMBER_OF_TOTAL_ROUND)
-
-        val test: String = records1+records2
-        Output.writeResult(test)
-
-        //AI2 vs AI3
-        val records3: String = mainLoop(None, ai2.copy(_isTurnToPlay = true), ai3, Utility.NUMBER_OF_TOTAL_ROUND )
-        //Output.writeResult(records3)
-        //val ai_proof: String = records1+records2+records3
-
-        //Output.writeResult(ai_proof)
       }
       case "AI vs AI" => {
-        val r1 = new Random
-        val r2 = new Random
-        val r3 = new Random
-        val ai1: Player = Player(Nil, "AI Level Beginner", Some(1), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r1))
-        val ai2: Player = Player(Nil, "AI Level Medium", Some(2), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r2))
-        val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(r3))
+        val ai1: Player = Player(Nil, "AI Level Beginner", Some(1), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(new Random))
+        val ai2: Player = Player(Nil, "AI Level Medium", Some(2), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(new Random))
+        val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(new Random))
 
         //A1 vs AI2
         val records1: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai2, Utility.NUMBER_OF_TOTAL_ROUND)
 
         //AI1 vs AI3
         val records2: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai3, Utility.NUMBER_OF_TOTAL_ROUND)
-
-        //val test: String = records1+records2
-        //Output.writeResult(test)*/
 
         //AI2 vs AI3
         val records3: String = mainLoop(None, ai2.copy(_isTurnToPlay = true), ai3, Utility.NUMBER_OF_TOTAL_ROUND )

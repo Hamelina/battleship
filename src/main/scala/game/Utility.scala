@@ -286,16 +286,15 @@ object Utility {
     * @return A new game that corresponds to the game given in argument but after a player has shoot.
     */
   def askPlayerToShoot(game: Game): Game ={
-    Display.clearScreen
-    Display.printAnnounceMyGrid
-    Display.printMyGrid(game)
-    Display.printSeparator
-    Display.printAnnounceOpponentGrid
-    Display.printOpponentGrid(game)
-
     if (game.player1.isTurnToPlay) {
       game.player1.level match {
         case  None => {
+          Display.clearScreen
+          Display.printAnnounceMyGrid
+          Display.printMyGrid(game)
+          Display.printSeparator
+          Display.printAnnounceOpponentGrid
+          Display.printOpponentGrid(game)
           Display.printAskForTarget(game.player1.name)
           val cell: Cell = Utility.askUserToShoot(game.player1.name)
           val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
@@ -308,12 +307,12 @@ object Utility {
 
         //level2
         case Some(2) => {
-          askAI2ToShoot(game.copy())
+          askAI3ToShoot(game.copy())
 
         }
 
         case _ => {
-          askAI3ToShoot(game.copy())
+          askAI2ToShoot(game.copy())
         }
 
       }
@@ -322,6 +321,12 @@ object Utility {
       //it is the turn of  the player2 to shoot
       game.player2 level match {
         case  None => {
+          Display.clearScreen
+          Display.printAnnounceMyGrid
+          Display.printMyGrid(game)
+          Display.printSeparator
+          Display.printAnnounceOpponentGrid
+          Display.printOpponentGrid(game)
           Display.printAskForTarget(game.player2.name)
           val cell: Cell = Utility.askUserToShoot(game.player2.name)
           val player1: Player = Utility.shoot(game.player1, cell.x, cell.y)
@@ -335,12 +340,12 @@ object Utility {
 
         //level2
         case Some(2) => {
-          askAI2ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+          askAI3ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
         }
 
         //level3
         case _ => {
-          askAI3ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+          askAI2ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
         }
 
       }

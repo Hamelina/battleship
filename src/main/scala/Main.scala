@@ -11,12 +11,12 @@ import scala.util.Random
 object Main extends App {
 
   Display.printWelcome
-  gameBuilder()
+  buildGame()
 
   /**
     * Builds the game.
     */
-  def gameBuilder(): Unit =
+  def buildGame(): Unit =
     Utility.askPlayerMode() match {
       case "Human mode" => {
         val player1Name: String = Utility.askForName("first")

@@ -8,7 +8,7 @@ import scala.util.Random
 
 
 /**
-  *
+  * A class that corresponds to a Player (either AI or User)
   * @param _fleet The fleet owned by the player.
   * @param _name The name of the player. If the player is supposed to be an AI, the name is None.
   * @param _level If the player is an AI, it corresponds to the level of it. Otherwise it is None.
@@ -63,11 +63,11 @@ case class Player (private val _fleet: List[Ship], private val _name: String, pr
 
 
   /**
-    * This function return whether a ship is sunk or not
+    * This function returns whether a ship is sunk or not
     *
-    * @param fleet
-    * @param cell
-    * @return
+    * @param fleet The fleet that needs to be checked
+    * @param cell The cell corresponding to the square targeted
+    * @return Boolean equals to true if the cell hit a ship, otherwise returns false.
     */
   def isShipSunk(fleet: List[Ship], cell: Cell): Boolean = {
     if (fleet.isEmpty) false

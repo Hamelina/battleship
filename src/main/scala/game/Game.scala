@@ -25,7 +25,4 @@ case class Game( private val _player1: Player,  private val _player2: Player){
   */
 object Game{
 
-  //The total number of round allowed
-  val NUMBER_OF_TOTAL_ROUND: Int = 100
-
 }

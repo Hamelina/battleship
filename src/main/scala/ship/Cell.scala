@@ -1,7 +1,6 @@
 package ship
 
-import game._
-
+import config._
 
 /**
   * This class represent a cell from the grid that can be hit
@@ -34,7 +33,7 @@ object Cell {
     * @param y The coordonate on the y-axis of the cell that needs to be checked
     * @return Boolean equals to true if the cell is inside the grid, otherwise it equals to false
     */
-  def isValid(x: Int, y: Int): Boolean = if ((x < 0) || (x >= Grid.SIZE) || (y < 0) || (y >= Grid.SIZE)) {
+  def isValid(x: Int, y: Int): Boolean = if ((x < 0) || (x >= Config.SIZE) || (y < 0) || (y >= Config.SIZE)) {
     false
   } else true
 

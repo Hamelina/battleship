@@ -1,11 +1,11 @@
 package game
 
+import config._
 import iohandler._
-import player.Player
+import player.{AIs, Player}
 import ship.{Cell, Ship}
 
 import scala.annotation.tailrec
-import scala.util.Random
 
 /**
   * This class is an utility in which some of the settings of the game are stored and it provides functions to display.
@@ -32,10 +32,7 @@ object Utility {
   val HIT_STATUS = "hit"
   val NOT_TARGETED = "not targeted"
 
-  //Size and number of the different ships allowed during the game
-  val NUMBER_AND_SIZE_OF_SHIPS: List[List[Int]] = List(List(1,1),List(1,2),List(2,3),List(1,4),List(1,5))
-  //Maximum round that can be player between two players.
-  val NUMBER_OF_TOTAL_ROUND: Int = 100
+
 
   /**
     * Asks a user to shoot
@@ -87,48 +84,6 @@ object Utility {
       Display.printTargetMissed
       val grid2: Grid = Grid.updateGrid(opponent.gridStates, x, y, Utility.MISSED_STATUS)
       opponent.copy(_gridStates = grid2, _isTurnToPlay = true)
-    }
-  }
-
-
-  /**
-    * Ask an AI to place ships.
-    *
-    * @param shipFormat A list of tuple that corresponds to a list of number and size of ship that needs to be placed on the grid so that the game can begin.
-    * @param fleet The current fleet of the Player.
-    * @param player The player who is asked to place his/her/its ships.
-    * @return A list of ships that corresponds to the coordinates of the ship the the player.
-    */
-  @tailrec
-  def askAIForShipSetting(shipFormat: List[List[Int]], fleet: List[List[Cell]], player: Player): List[Ship] = {
-    //there is no ship left to place
-    if (shipFormat.isEmpty) {
-      fleet.map(x => Ship(x.size, x))
-    }
-    else if (1 > shipFormat.head(0)){
-      askAIForShipSetting(shipFormat.tail, fleet, player)
-    }
-    //there is still at least one ship left to place
-    else
-    {
-      //we arbitrary set the direction to R
-      val r: Random = player.random.get
-      val x = r.nextInt(Grid.SIZE)
-      val y = r.nextInt(Grid.SIZE)
-      val l2 = Ship.createCellsList(size = shipFormat.head(1), direction = "R", Cell(x, y) :: Nil)
-      val isValidShip: Boolean = Ship.isValid(x = x, y = y, shipFormat.head(1), direction = "R")
-
-      //if the settings generated for the ship to create are not superposed to the the settings of the existing fleet
-      if (!isValidShip) {
-        askAIForShipSetting(shipFormat, fleet = fleet, player.copy(_random = Option(r)))
-      }
-      //if the inputs are valid
-      else if (isValidShip && !Ship.hasAtLeastOneElement(l1 = fleet, l2))  {
-        askAIForShipSetting(shipFormat.updated(0, shipFormat.apply(0).updated(0, shipFormat.head(0)-1)),fleet = l2+:fleet, player.copy(_random = Option(r)))
-      }
-      else {
-        askAIForShipSetting(shipFormat, fleet, player.copy(_random = Option(r)))
-      }
     }
   }
 
@@ -207,13 +162,15 @@ object Utility {
     * @return
     */
   def initializeRound(looser: Player, winner: Player): Game = {
-    val listShipPlayer1: List[Ship] = Utility.askForShipSettings(NUMBER_AND_SIZE_OF_SHIPS, Nil, looser)
-    val gridPlayer1: Grid = Grid.initializeGridFromFleet(listShipPlayer1, Grid.SIZE)
+    val listShipPlayer1: List[Ship] = Utility.askForShipSettings(Config.NUMBER_AND_SIZE_OF_SHIPS, Nil, looser)
+    val gridPlayer1: Grid = Grid.initializeGridFromFleet(listShipPlayer1, Config.SIZE
+    )
     val player1: Player = looser.copy(_fleet = listShipPlayer1, _gridStates = gridPlayer1, _isTurnToPlay = true, _toTarget = Nil)
 
 
-    val listShipPlayer2: List[Ship] = Utility.askForShipSettings(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, winner)
-    val gridPlayer2: Grid = Grid.initializeGridFromFleet(listShipPlayer2, Grid.SIZE)
+    val listShipPlayer2: List[Ship] = Utility.askForShipSettings(Config.NUMBER_AND_SIZE_OF_SHIPS, Nil, winner)
+    val gridPlayer2: Grid = Grid.initializeGridFromFleet(listShipPlayer2, Config.SIZE
+    )
     val player2: Player = winner.copy(_fleet = listShipPlayer2, _gridStates = gridPlayer2, _isTurnToPlay=false,  _toTarget = Nil)
 
     Game(player1, player2)
@@ -265,8 +222,8 @@ object Utility {
     */
   def askForShipSettings(shipFormat: List[List[Int]], fleet: List[List[Cell]], player: Player): List[Ship] = {
     player.level match{
-      case None => Utility.askUserForShipSettings(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, player)
-      case _ => Utility.askAIForShipSetting(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, player)
+      case None => Utility.askUserForShipSettings(Config.NUMBER_AND_SIZE_OF_SHIPS, Nil, player)
+      case _ => AIs.askAIForShipSetting(Config.NUMBER_AND_SIZE_OF_SHIPS, Nil, player)
     }
   }
 
@@ -303,16 +260,16 @@ object Utility {
         }
 
         //level1
-        case Some(1) => askAI1ToShoot(game.copy())
+        case Some(1) => AIs.askAI1ToShoot(game.copy())
 
         //level2
         case Some(2) => {
-          askAI3ToShoot(game.copy())
+          AIs.askAI3ToShoot(game.copy())
 
         }
 
         case _ => {
-          askAI2ToShoot(game.copy())
+          AIs.askAI2ToShoot(game.copy())
         }
 
       }
@@ -336,135 +293,22 @@ object Utility {
         }
 
         //level1
-        case Some(1) => askAI1ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+        case Some(1) => AIs.askAI1ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
 
         //level2
         case Some(2) => {
-          askAI3ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+          AIs.askAI3ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
         }
 
         //level3
         case _ => {
-          askAI2ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+          AIs.askAI2ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
         }
 
       }
     }
 
 
-  }
-
-
-
-  /**
-    * Ask the AI1 involved in the game to shoot.
-    * @param game The current game for which the AI1 is asked to shoot.
-    * @return A new game that corresponds to the game given in argument but after the AI1 has shoot.
-    */
-  def askAI1ToShoot(game: Game): Game = {
-    val cell: Cell = Cell(game.player1.random.get.nextInt(Grid.SIZE), game.player1.random.get.nextInt(Grid.SIZE))
-    val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
-    Display.clearScreen
-    val player2: Player = game.player1.copy(_isTurnToPlay = false)
-    game.copy(_player1 = player1, _player2 = player2)
-  }
-
-  /**
-    * Ask the AI2 involved in the game to shoot.
-    * @param game The current game for which the AI2 is asked to shoot.
-    * @return A new game that corresponds to the game given in argument but after the AI2 has shoot.
-    */
-  @tailrec
-  def askAI2ToShoot(game: Game): Game = {
-    //here the player1 in the game is the AI2
-    val r = game.player1.random.get
-    val x = r.nextInt(Grid.SIZE)
-    val y = r.nextInt(Grid.SIZE)
-
-    haveBeenTargeted(game.player2.gridStates, Cell(x, y)) match {
-      //if it was not yet targeted
-      case false =>{
-        val cell: Cell = Cell(x,y)
-        val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
-        val player2: Player = game.player1.copy(_isTurnToPlay = false, _random = Some(r))
-        game.copy(_player1 = player1, _player2 = player2)
-      }
-
-      //if it has been targeted
-      case _ => {
-        this.askAI2ToShoot(game)
-      }
-    }
-  }
-
-  /**
-    * Ask the AI3 involved in the game to shoot.
-    * @param game The current game for which the AI3 is asked to shoot.
-    * @return A new game that corresponds to the game given in argument but after the AI3 has shoot.
-    */
-  @tailrec
-  def askAI3ToShoot(game: Game): Game = {
-    //player1 is considered as AI3
-    if (game.player1.toTarget.isEmpty) {
-      val x = game.player1.random.get.nextInt(Grid.SIZE)
-      val y = game.player1.random.get.nextInt(Grid.SIZE)
-      if (Utility.haveBeenTargeted(game.player2.gridStates, Cell(x, y))) {
-        askAI3ToShoot(game.copy())
-      }
-      else {
-        val toTarget: List[Cell] = Utility.filterValidCells(generatePotentialCells(x, y), Nil)
-        askAI3ToShoot(game.copy(_player1 = game.player1.copy(_toTarget = toTarget)))
-      }
-    }
-    else {
-      Utility.isHit(game.player2.fleet, game.player1.toTarget.head) match {
-        case true => {
-          askAI3ToShoot(game.copy(_player1 = game.player1.copy(_toTarget = game.player1.toTarget.tail)))
-        }
-        case _ => {
-          val player1 = shoot(game.player2, game.player1.toTarget.head.x, game.player1.toTarget.head.y)
-          player1.gridStates.gridStates(game.player1.toTarget.head.y)(game.player1.toTarget.head.x) match {
-            case Utility.HIT_STATUS => {
-              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _toTarget = game.player1.toTarget.tail:::Utility.filterValidCells(generatePotentialCells(game.player1.toTarget.head.x, game.player1.toTarget.head.y),Nil)))
-            }
-            case _ => {
-              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _toTarget = game.player1.toTarget.tail))
-            }
-          }
-        }
-      }
-    }
-  }
-
-
-  /**
-    * Generates a list of potential cells that can be hit around a cell
-    * @param x The coordinates on x-axis of the concerned cell.
-    * @param y The coordinates on y-axis of the concerned cell.
-    * @return A list of cells whose parameters have been given as arguments of the function.
-    */
-  def generatePotentialCells(x: Int, y: Int): List[Cell] = {
-    Cell(x-1,y)::Cell(x+1,y)::Cell(x,y-1)::Cell(x,y+1)::Nil
-  }
-
-
-  /**
-    * Filters a list of potential cells and returns the valid ones.
-    * @param potential The list of cells to filter.
-    * @param valid  The valid cells.
-    * @return A list of a valid cells given a list of cells.
-    */
-  @tailrec
-  def filterValidCells(potential: List[Cell], valid: List[Cell]): List [Cell] = {
-    if (potential.isEmpty){
-      valid
-    }
-    else if (Cell.isValid(potential.head.x, potential.head.y)){
-          filterValidCells(potential.tail, potential.head::valid)
-        }
-        else {
-         filterValidCells(potential.tail, valid)
-        }
   }
 
 

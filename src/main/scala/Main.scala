@@ -2,6 +2,7 @@
 import game._
 import iohandler._
 import player._
+import config._
 
 import scala.util.Random
 
@@ -35,7 +36,7 @@ object Main extends App {
         val aiName: String = "AI" + AIlevel
         val player1: Player = Player(Nil, player1Name, None, 0,  _isTurnToPlay = true, Grid(Nil), Nil, None)
         val player2: Player = Player(Nil, aiName, Some(AIlevel.toInt), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(new Random()))
-        val score = mainLoop(None, player1, player2, Game.NUMBER_OF_TOTAL_ROUND)
+        val score = mainLoop(None, player1, player2, Config.NUMBER_OF_TOTAL_ROUND)
         Display.printEndOfGame(score)
 
       }
@@ -45,13 +46,13 @@ object Main extends App {
         val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, Some(new Random))
 
         //A1 vs AI2
-        val records1: String = mainLoop(None, ai2, ai1.copy(_isTurnToPlay = true), Utility.NUMBER_OF_TOTAL_ROUND)
+        val records1: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai2, Config.NUMBER_OF_TOTAL_ROUND)
 
         //AI1 vs AI3
-        val records2: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai3, Utility.NUMBER_OF_TOTAL_ROUND)
+        val records2: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai3, Config.NUMBER_OF_TOTAL_ROUND)
 
         //AI2 vs AI3
-        val records3: String = mainLoop(None, ai3, ai2.copy(_isTurnToPlay = true),Utility.NUMBER_OF_TOTAL_ROUND )
+        val records3: String = mainLoop(None, ai3, ai2.copy(_isTurnToPlay = true),Config.NUMBER_OF_TOTAL_ROUND )
 
         val ai_proof: String = records1+records2+records3
 

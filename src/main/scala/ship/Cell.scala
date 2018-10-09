@@ -9,7 +9,17 @@ import game._
   * @param _y the position of the cell y-axis
   */
 case class Cell (private val _x:Int, private val _y:Int){
+
+  /**
+    * Getter of the x coordinates
+    * @return An Int corresponding to the x coordinate of the cell
+    */
   def x: Int = this._x
+
+  /**
+    * Getter of the y coordinates
+    * @return An Int corresponding to the y coordinate of the cell
+    */
   def y: Int = this._y
 }
 

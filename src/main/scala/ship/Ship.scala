@@ -9,7 +9,17 @@ import scala.annotation.tailrec
   * @param _cells The cells currently occupied by the ship
   */
 case class Ship (private val _size: Int, private val _cells: List[Cell]){
+
+  /**
+    *Getter of the size of the size.
+    * @return An Int that corresponds to the size of the ship.
+    */
   def size: Int = this._size
+
+  /**
+    * Getter of the list of cells of the ship
+    * @return A list of Cells that corresponds to the list of cells of the ship.
+    */
   def cells: List[Cell] = this._cells
 
 
@@ -32,6 +42,9 @@ case class Ship (private val _size: Int, private val _cells: List[Cell]){
   }
 }
 
+/**
+  * Object containing some static functions of the class Ship.
+  */
 object Ship{
 
   //given a cell for the beginning, a name, a direction and a size, render the corresponding ship
@@ -47,16 +60,6 @@ object Ship{
     new Ship(_size = this.createCellsList(shipSize, direction, List(startPoint)).size , _cells=this.createCellsList(shipSize, direction, List(startPoint)))
   }
 
-  /*def createShipFromListOfCells( cellsList: List[Cell]): Ship = {
-    val name = listCells.size match {
-      case 1 => "Carrier"
-      case 2 =>  "BattleShip"
-      case 3 => "Cruiser"
-      case 4 => "Submarine"
-      case 5 => "Destroyer"
-    }
-    new Ship(_typeName = name, _cells = cellsList)
-  }*/
 
   /**
     * This function concatenates cells into a given list of cells.
@@ -131,8 +134,13 @@ object Ship{
     if (list.size> l2.size) l1containsl2(list, l2) else l1containsl2(l2, list)
   }
 
+  /**
+    * Updates a ship given a shoot.
+    * @param cell The cell that have been targeted.
+    * @param ship The concerned ship to update
+    * @return A new ship that corresponds to the same ship if the shoot was missed, otherwise returns a new ship that corresponds to a an ship where the given cell have been removed.
+    */
   def updatedShip(cell: Cell, ship: Ship): Ship = new Ship(ship.size,ship.cells.filter(x => x!=cell))
-
 
 
 }

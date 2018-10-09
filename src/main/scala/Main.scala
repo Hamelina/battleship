@@ -1,14 +1,21 @@
+
 import game._
 import iohandler._
 import player._
 
 import scala.util.Random
 
+/**
+  * The main programm of the battle ship.
+  */
 object Main extends App {
 
-
+  Display.printWelcome
   gameBuilder()
 
+  /**
+    * Builds the game.
+    */
   def gameBuilder(): Unit =
     Utility.askPlayerMode() match {
       case "Human mode" => {
@@ -55,27 +62,36 @@ object Main extends App {
         val ai3: Player = Player(Nil, "AI Level Hard", Some(3), 0, _isTurnToPlay =  false, Grid(Nil), Nil, None, Some(r3), None)
 
         //A1 vs AI2
-       /* val records1: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai2, Utility.NUMBER_OF_TOTAL_ROUND)
+        val records1: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai2, Utility.NUMBER_OF_TOTAL_ROUND)
 
         //AI1 vs AI3
         val records2: String = mainLoop(None, ai1.copy(_isTurnToPlay = true), ai3, Utility.NUMBER_OF_TOTAL_ROUND)
 
-        val test: String = records1+records2
+        //val test: String = records1+records2
         //Output.writeResult(test)*/
 
         //AI2 vs AI3
         val records3: String = mainLoop(None, ai2.copy(_isTurnToPlay = true), ai3, Utility.NUMBER_OF_TOTAL_ROUND )
 
-        //val ai_proof: String = records1+records2+records3
+        val ai_proof: String = records1+records2+records3
 
-        //Output.writeResult(ai_proof)
+        //write the result in a csv
+        Output.writeResult(ai_proof)
       }
 
       case _ => Display.printSomethingWentWrong
     }
 
 
-
+  /**
+    * The main loop of a game
+    *
+    * @param gameState An option of game that corresponds to the current gamestate: None when a player won a round.
+    * @param looser If the game begins, corresponds to the player who starts the game in first. Otherwise corresponds to the player who lost the last round.
+    * @param winner If the game begins, corresponds to the player who starts the game in second . Otherwise corresponds to the player who won the last round.
+    * @param nbRoundsToPlay The total of round left to play.
+    * @return A string that corresponds to the final score (once the number of rounds left to play is equal to 0).
+    */
   def mainLoop(gameState: Option[Game], looser: Player, winner: Player, nbRoundsToPlay: Int): String = {
     Display.clearScreen
     if (nbRoundsToPlay == 0) {

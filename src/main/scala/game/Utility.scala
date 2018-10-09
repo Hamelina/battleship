@@ -93,10 +93,11 @@ object Utility {
 
   /**
     * Ask an AI to place ships.
-    * @param shipFormat
-    * @param fleet
-    * @param player
-    * @return A list of ships
+    *
+    * @param shipFormat A list of tuple that corresponds to a list of number and size of ship that needs to be placed on the grid so that the game can begin.
+    * @param fleet The current fleet of the Player.
+    * @param player The player who is asked to place his/her/its ships.
+    * @return A list of ships that corresponds to the coordinates of the ship the the player.
     */
   @tailrec
   def askAIForShipSetting(shipFormat: List[List[Int]], fleet: List[List[Cell]], player: Player): List[Ship] = {
@@ -137,7 +138,8 @@ object Utility {
     * Asks a user to enter some information
     * @param shipFormat A list of tuple that corresponds to a list of number and size of ship that needs to be placed on the grid so that the game can begin.
     * @param fleet The list of initial existing cells corresponding to the initial existing fleet
-    * @return A list of ships that corresponds the possible ships created by the input of the user
+    * @param player The player who is asked to place his/her/its ships.
+    * @return A list of ships that corresponds to the coordinates of the ship the the player.
     */
   @tailrec
   def askUserForShipSettings(shipFormat: List[List[Int]], fleet: List[List[Cell]], player: Player): List[Ship] = {
@@ -192,12 +194,18 @@ object Utility {
     * @param cell The coordinates of a square we need to check.
     * @return A boolean equals to true if the given cell is occupied, otherwise false.
     */
-  def isShipSunk(fleet: List[Ship], cell: Cell): Boolean = {
+  def isHit(fleet: List[Ship], cell: Cell): Boolean = {
     if (fleet.isEmpty)  false
     else if (fleet.head.cells.contains(cell)) true
-    else isShipSunk(fleet.tail, cell)
+    else isHit(fleet.tail, cell)
   }
 
+  /**
+    * Initialize a round involving two player.
+    * @param looser Either the looser last round or The player who starts the round.
+    * @param winner Either the winner of the last round or the one who got to play in second position.
+    * @return
+    */
   def initializeRound(looser: Player, winner: Player): Game = {
     val listShipPlayer1: List[Ship] = Utility.askForShipSettings(NUMBER_AND_SIZE_OF_SHIPS, Nil, looser)
     val gridPlayer1: Grid = Grid.initializeGridFromFleet(listShipPlayer1, Grid.SIZE)
@@ -229,6 +237,10 @@ object Utility {
     }
   }
 
+  /**
+    * Ask the user the level of the AI he/she wants to challenge
+    * @return A string that corresponds to the level of AI the user wants to challenge: either 1, or 2 or 3. Otherwise the user is asked to give another number until it corresponds to the given selection.
+    */
   def askForAILevel(): String = {
     Display.printAskLevel
     val level = Input.level
@@ -243,6 +255,14 @@ object Utility {
     }
   }
 
+  /**
+    *Asks a player (whether an AI or a user) to place his/her/its ships.
+    *
+    * @param shipFormat A list of tuple that corresponds to a list of number and size of ship that needs to be placed on the grid so that the game can begin.
+    * @param fleet The current fleet of the player
+    * @param player The player who is asked to place his/her/its ships.
+    * @return A list of ships that corresponds to the coordinates of the ship the the player.
+    */
   def askForShipSettings(shipFormat: List[List[Int]], fleet: List[List[Cell]], player: Player): List[Ship] = {
     player.level match{
       case None => Utility.askUserForShipSettings(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, player)
@@ -250,19 +270,29 @@ object Utility {
     }
   }
 
+  /**
+    *Ask user to enter his/her name
+    * @param order A String (either "first" of "second") that corresponds to the turn of the user whose name is asked.
+    * @return A string that corresponds to the name of the user.
+    */
   def askForName(order: String): String = {
     Display.printAskName(order)
     Input.name
   }
 
+  /**
+    * Ask player involved in a game (wheter an AI or a User) to shoot.
+    * @param game The current game for which a player is asked to shoot.
+    * @return A new game that corresponds to the game given in argument but after a player has shoot.
+    */
   def askPlayerToShoot(game: Game): Game ={
-
-    /*Display.clearScreen
+    Display.clearScreen
     Display.printAnnounceMyGrid
     Display.printMyGrid(game)
     Display.printSeparator
     Display.printAnnounceOpponentGrid
-    Display.printOpponentGrid(game)*/
+    Display.printOpponentGrid(game)
+
     if (game.player1.isTurnToPlay) {
       game.player1.level match {
         case  None => {
@@ -273,14 +303,15 @@ object Utility {
           game.copy(_player1 = player1, _player2 = player2)
         }
 
-        //TODO for the  AI
         //level1
         case Some(1) => askAI1ToShoot(game.copy())
+
         //level2
         case Some(2) => {
           askAI2ToShoot(game.copy())
+
         }
-        //level3
+
         case _ => {
           askAI3ToShoot(game.copy())
         }
@@ -288,7 +319,7 @@ object Utility {
       }
     }
     else {
-      //it ut to the player2 to shoot
+      //it is the turn of  the player2 to shoot
       game.player2 level match {
         case  None => {
           Display.printAskForTarget(game.player2.name)
@@ -299,13 +330,14 @@ object Utility {
           game.copy(_player1 = player1, _player2=player2)
         }
 
-        //TODO pour les ia
         //level1
         case Some(1) => askAI1ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+
         //level2
         case Some(2) => {
           askAI2ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
         }
+
         //level3
         case _ => {
           askAI3ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
@@ -319,7 +351,11 @@ object Utility {
 
 
 
-  //TODO continu for the AI
+  /**
+    * Ask the AI1 involved in the game to shoot.
+    * @param game The current game for which the AI1 is asked to shoot.
+    * @return A new game that corresponds to the game given in argument but after the AI1 has shoot.
+    */
   def askAI1ToShoot(game: Game): Game = {
     val cell: Cell = Cell(game.player1.random.get.nextInt(Grid.SIZE), game.player1.random.get.nextInt(Grid.SIZE))
     val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
@@ -328,7 +364,11 @@ object Utility {
     game.copy(_player1 = player1, _player2 = player2)
   }
 
-
+  /**
+    * Ask the AI2 involved in the game to shoot.
+    * @param game The current game for which the AI2 is asked to shoot.
+    * @return A new game that corresponds to the game given in argument but after the AI2 has shoot.
+    */
   @tailrec
   def askAI2ToShoot(game: Game): Game = {
     //here the player1 in the game is the AI2
@@ -356,6 +396,11 @@ object Utility {
     }
   }
 
+  /**
+    * Ask the AI3 involved in the game to shoot.
+    * @param game The current game for which the AI3 is asked to shoot.
+    * @return A new game that corresponds to the game given in argument but after the AI3 has shoot.
+    */
   @tailrec
   def askAI3ToShoot(game: Game): Game = {
     //player1 is considered as AI3
@@ -371,7 +416,7 @@ object Utility {
       }
     }
     else {
-      Utility.haveBeenTargeted(game.player2.gridStates, game.player1.targeted.head) match {
+      Utility.isHit(game.player2.fleet, game.player1.targeted.head) match {
         case true => {
           askAI3ToShoot(game.copy(_player1 = game.player1.copy(_targeted = game.player1.targeted.tail)))
         }
@@ -391,12 +436,23 @@ object Utility {
   }
 
 
-
-
+  /**
+    * Generates a list of potential cells that can be hit around a cell
+    * @param x The coordinates on x-axis of the concerned cell.
+    * @param y The coordinates on y-axis of the concerned cell.
+    * @return A list of cells whose parameters have been given as arguments of the function.
+    */
   def generatePotentialCells(x: Int, y: Int): List[Cell] = {
     Cell(x-1,y)::Cell(x+1,y)::Cell(x,y-1)::Cell(x,y+1)::Nil
   }
 
+
+  /**
+    * Filters a list of potential cells and returns the valid ones.
+    * @param potential The list of cells to filter.
+    * @param valid  The valid cells.
+    * @return A list of a valid cells given a list of cells.
+    */
   @tailrec
   def filterValidCells(potential: List[Cell], valid: List[Cell]): List [Cell] = {
     if (potential.isEmpty){
@@ -411,22 +467,14 @@ object Utility {
   }
 
 
-
-
-
-/**
-  * si ai.testedDirection est vide:
-  *   check si nouvelle celllule générée a déja été testée ou non
-  *   si oui : on lui redemande un autre
-  *   si non:
-  */
-
-
-
-  //says whether or not a square have been targeted
+  /**
+    * Says whether or not a cell have already been targeted before (given a grid).
+    * @param opponentGrid The grid on which the check is being made.
+    * @param cell The coordinates of the cell to check.
+    * @return A boolean equals to true if the cell given as an argument have already been targeted, otherwise it return false.
+    */
   def haveBeenTargeted(opponentGrid: Grid, cell: Cell): Boolean = {
-    println("$$$$---==== "+cell)
-    println(opponentGrid.gridStates(cell.y)(cell.x))
+    //says whether or not a square have been targeted
     opponentGrid.gridStates(cell.y)(cell.x) match {
       case Utility.MISSED_STATUS => {
         true
@@ -437,8 +485,5 @@ object Utility {
       case _ => false
     }
   }
-
-
-
 
 }

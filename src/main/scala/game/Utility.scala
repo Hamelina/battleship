@@ -379,7 +379,7 @@ object Utility {
           val player1 = shoot(game.player2, game.player1.targeted.head.x, game.player1.targeted.head.y)
           player1.gridStates.gridStates(game.player1.targeted.head.y)(game.player1.targeted.head.x) match {
             case Utility.HIT_STATUS => {
-              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail))
+              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail:::Utility.filterValidCells(generatePotentialCells(game.player1.targeted.head.x, game.player1.targeted.head.y),Nil)))
             }
             case _ => {
               game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail))

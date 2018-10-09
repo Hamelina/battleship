@@ -41,20 +41,20 @@ class ShipTest extends FunSuite with DiagrammedAssertions {
     assert(!Ship.isValid(x = 0,y = 0, size = 2, direction = "L"))
     assert(Ship.isValid(x = 0,y = 0, size = 2, direction = "R"))
 
-    assert(Ship.isValid(x = Grid.limitX ,y = Grid.limitY , size = 2, direction = "U"))
-    assert(!Ship.isValid(x = Grid.limitX,y = Grid.limitY, size = 2, direction = "D"))
-    assert(Ship.isValid(x = Grid.limitX,y = Grid.limitY, size = 2, direction = "L"))
-    assert(!Ship.isValid(x = Grid.limitX,y = Grid.limitY, size = 2, direction = "R"))
+    assert(Ship.isValid(x = Grid.SIZE-1 ,y = Grid.SIZE-1 , size = 2, direction = "U"))
+    assert(!Ship.isValid(x = Grid.SIZE-1,y = Grid.SIZE-1, size = 2, direction = "D"))
+    assert(Ship.isValid(x = Grid.SIZE-1,y = Grid.SIZE-1, size = 2, direction = "L"))
+    assert(!Ship.isValid(x = Grid.SIZE-1,y = Grid.SIZE-1, size = 2, direction = "R"))
 
-    assert(Ship.isValid(x = 0,y = Grid.limitY, size = 2, direction = "U"))
-    assert(!Ship.isValid(x = 0,y = Grid.limitY, size = 2, direction = "D"))
-    assert(!Ship.isValid(x = 0,y = Grid.limitY, size = 2, direction = "L"))
-    assert(Ship.isValid(x = 0,y = Grid.limitY, size = 2, direction = "R"))
+    assert(Ship.isValid(x = 0,y = Grid.SIZE-1, size = 2, direction = "U"))
+    assert(!Ship.isValid(x = 0,y = Grid.SIZE-1, size = 2, direction = "D"))
+    assert(!Ship.isValid(x = 0,y = Grid.SIZE-1, size = 2, direction = "L"))
+    assert(Ship.isValid(x = 0,y = Grid.SIZE-1, size = 2, direction = "R"))
 
-    assert(!Ship.isValid(x = Grid.limitX,y = 0, size = 2, direction = "U"))
-    assert(Ship.isValid(x = Grid.limitX,y = 0, size = 2, direction = "D"))
-    assert(Ship.isValid(x = Grid.limitX,y = 0, size = 2, direction = "L"))
-    assert(!Ship.isValid(x = Grid.limitX,y = 0, size = 2, direction = "R"))
+    assert(!Ship.isValid(x = Grid.SIZE-1,y = 0, size = 2, direction = "U"))
+    assert(Ship.isValid(x = Grid.SIZE-1,y = 0, size = 2, direction = "D"))
+    assert(Ship.isValid(x = Grid.SIZE-1,y = 0, size = 2, direction = "L"))
+    assert(!Ship.isValid(x = Grid.SIZE-1,y = 0, size = 2, direction = "R"))
 
     //this ship can be built
     assert(Ship.isValid(x = 3,y = 3, size = 1, direction = "U"))

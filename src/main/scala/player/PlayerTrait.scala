@@ -1,5 +1,0 @@
-package player
-
-trait PlayerTrait {
-
-}

@@ -3,6 +3,7 @@ import game._
 import ship._
 
 import scala.annotation.tailrec
+import scala.util.Random
 
 
 
@@ -15,30 +16,43 @@ import scala.annotation.tailrec
   * @param _isTurnToPlay A boolean that states if it is the player's turn to play. At the beginning of the game, it is always false.
   * @param _gridStates A grid that corresponds to a list of lists of String that describes the state of each cell (is used to display)
   */
-case class Player (private val _fleet: List[Ship], private val _name: String, private val _level: Option[Int], private val _score: Int, private val _isTurnToPlay: Boolean, private val _gridStates: Grid, private val _hit: List[Cell], private val _testedDirection: List[String]){
+case class Player (private val _fleet: List[Ship], private val _name: String, private val _level: Option[Int], private val _score: Int, private val _isTurnToPlay: Boolean, private val _gridStates: Grid, private val _targeted: List[Cell], private val _currentDirection: Option[String], private val _random: Option[Random], _lastHit: Option[Cell]) {
   def fleet: List[Ship] = this._fleet
+
   def name: String = this._name
+
   def level: Option[Int] = this._level
+
   def score: Int = this._score
+
   def isTurnToPlay: Boolean = this._isTurnToPlay
+
   def gridStates: Grid = this._gridStates
 
+  def random: Option[Random] = this._random
+
   //memory of the number of hit(for AI3)
-  def hit: List[Cell] = _hit
+  def targeted: List[Cell] = this._targeted
 
   //memory of the square tested for this direction
-  def testedDirection: List[String] = _testedDirection
+  def currentDirection: Option[String] = this._currentDirection
+
+  def lastHit: Option[Cell] = this._lastHit
+
   /**
     * This function tells if this player has lost of not
+    *
     * @return Boolean equal to true if this player has lost, otherwise it returns false
     */
   def hasLost: Boolean = {
-    this.numberOfShipLeft(fleet, 0)==0
+    this.numberOfShipLeft(fleet, 0) == 0
   }
+
   /**
     * This function returns the number of ships left.
+    *
     * @param listShip The initial list of ships that one wants to know the number of ships left.
-    * @param counter The number of ship which have not been sunk yet.
+    * @param counter  The number of ship which have not been sunk yet.
     * @return The number of ship which are not sunk yet.
     */
   @tailrec
@@ -48,21 +62,22 @@ case class Player (private val _fleet: List[Ship], private val _name: String, pr
     else if (listShip.head.isSunk) {
       numberOfShipLeft(listShip.tail, counter)
     }
-    else numberOfShipLeft(listShip.tail, counter+1)
+    else numberOfShipLeft(listShip.tail, counter + 1)
+  }
+
+
+  /**
+    * This function return whether a ship is sunk or not
+    *
+    * @param fleet
+    * @param cell
+    * @return
+    */
+  def isShipSunk(fleet: List[Ship], cell: Cell): Boolean = {
+    if (fleet.isEmpty) false
+    else if (fleet.head.cells.contains(cell)) true
+    else isShipSunk(fleet.tail, cell)
   }
 }
 
-object Player{
 
-
-
-  //TODO
-  //def fillGridByAIs(fleet: List[Ship], shipFormat: List[List[Int]]): List[Ship]
-
-  //TODO
-  //def targetIA1(grid: Grid): Cell
-  //def targetIA2(grid: Grid): Cell
-  //def targetIA3(grid: Grid): Cell
-
-
-}

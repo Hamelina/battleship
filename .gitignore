@@ -1,6 +1,6 @@
 *.class
 *.log
-
+ai_proof.csv
 
 # sbt specific
 .cache/

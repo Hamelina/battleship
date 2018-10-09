@@ -8,25 +8,32 @@ import scala.annotation.tailrec
 import scala.util.Random
 
 /**
-  * This class is an utility in which the settings of the game are stored and it provides functions to display.
+  * This class is an utility in which some of the settings of the game are stored and it provides functions to display.
   */
 case class Utility(private val _game: Game) {
+
+  //the current game
   def game: Game = this._game
 }
 
+/**
+  * This object corresponds to the
+  */
 object Utility {
-  val GRID_LIMIT_X = 9
-  val GRID_LIMIT_Y= 9
+
+  //an ASCII character used to print a grid
   val BLOCK = "██"
+
+  /**
+    * The different status of a square in a grid.
+    */
   val OCCUPIED_STATUS = "occupied"
   val MISSED_STATUS = "missed"
   val HIT_STATUS = "hit"
   val NOT_TARGETED = "not targeted"
 
   //Size and number of the different ships allowed during the game
-  //TODO uncomment the line below before the deadline
-  //val NUMBER_AND_SIZE_OF_SHIPS: List[List[Int]] = List(List(1,1),List(1,2),List(2,3),List(1,4),List(1,5))
-  val NUMBER_AND_SIZE_OF_SHIPS: List[List[Int]] = List(List(1,1),List(1,2))
+  val NUMBER_AND_SIZE_OF_SHIPS: List[List[Int]] = List(List(1,1),List(1,2),List(2,3),List(1,4),List(1,5))
   val NUMBER_OF_TOTAL_ROUND: Int = 100
   val NB_SHIP = 6
   val CARRIER: (Int, Int) = (1, 1)
@@ -91,33 +98,34 @@ object Utility {
 
 
   @tailrec
-  def askAIForShipSetting(shipFormat: List[List[Int]], fleet: List[List[Cell]], random: scala.util.Random): List[Ship] = {
+  def askAIForShipSetting(shipFormat: List[List[Int]], fleet: List[List[Cell]], player: Player): List[Ship] = {
     //there is no ship left to place
     if (shipFormat.isEmpty) {
       fleet.map(x => Ship(x.size, x))
     }
     else if (1 > shipFormat.head(0)){
-      askAIForShipSetting(shipFormat.tail, fleet, random)
+      askAIForShipSetting(shipFormat.tail, fleet, player)
     }
     //there is still at least one ship left to place
     else
     {
       //we arbitrary set the direction to R
-      val x = random.nextInt(Grid.SIZE)
-        val y = random.nextInt(Grid.SIZE)
+      val r: Random = player.random.get
+      val x = r.nextInt(Grid.SIZE)
+      val y = r.nextInt(Grid.SIZE)
       val l2 = Ship.createCellsList(size = shipFormat.head(1), direction = "R", Cell(x, y) :: Nil)
       val isValidShip: Boolean = Ship.isValid(x = x, y = y, shipFormat.head(1), direction = "R")
 
       //if the settings generated for the ship to create are not superposed to the the settings of the existing fleet
       if (!isValidShip) {
-        askAIForShipSetting(shipFormat, fleet = fleet, random)
+        askAIForShipSetting(shipFormat, fleet = fleet, player.copy(_random = Option(r)))
       }
       //if the inputs are valid
       else if (isValidShip && !Ship.hasAtLeastOneElement(l1 = fleet, l2))  {
-        askAIForShipSetting(shipFormat.updated(0, shipFormat.apply(0).updated(0, shipFormat.head(0)-1)),fleet = l2+:fleet, random)
+        askAIForShipSetting(shipFormat.updated(0, shipFormat.apply(0).updated(0, shipFormat.head(0)-1)),fleet = l2+:fleet, player.copy(_random = Option(r)))
       }
       else {
-        askAIForShipSetting(shipFormat, fleet, random)
+        askAIForShipSetting(shipFormat, fleet, player.copy(_random = Option(r)))
       }
     }
   }
@@ -136,7 +144,7 @@ object Utility {
     * @return A list of ships that corresponds the possible ships created by the input of the user
     */
   @tailrec
-  def askUserForShipSettings(shipFormat: List[List[Int]], fleet: List[List[Cell]], playerName: String): List[Ship] = {
+  def askUserForShipSettings(shipFormat: List[List[Int]], fleet: List[List[Cell]], player: Player): List[Ship] = {
 
     //there is no ship left to place
     if (shipFormat.isEmpty) {
@@ -145,12 +153,12 @@ object Utility {
 
       //there is still ship left to place and its number is 0
     else if (1 > shipFormat.head(0)){
-      askUserForShipSettings(shipFormat.tail, fleet, playerName)
+      askUserForShipSettings(shipFormat.tail, fleet, player)
     }
     //there is still at least one ship left to place
     else
     {
-      Display.printAskShipToUser(playerName, shipFormat.head(1))
+      Display.printAskShipToUser(player.name, shipFormat.head(1))
       val settings: String = Input.startingPoint
       val startingPoint: Array[String] = settings.split(" ")
       startingPoint.size match {
@@ -162,61 +170,25 @@ object Utility {
           //if the settings entered for the ship to create are not superposed to the the settings of the existing fleet
           if (!isValidShip) {
             Display.printStartPositionNotValid
-            askUserForShipSettings(shipFormat, fleet = fleet, playerName)
+            askUserForShipSettings(shipFormat, fleet = fleet, player)
           }
           //if the inputs are valid
           else if (isValidShip && !Ship.hasAtLeastOneElement(l1 = fleet, l2 = l2))  {
-            askUserForShipSettings(shipFormat.updated(0, shipFormat.apply(0).updated(0, shipFormat.head(0)-1)),fleet = l2+:fleet, playerName)
+            askUserForShipSettings(shipFormat.updated(0, shipFormat.apply(0).updated(0, shipFormat.head(0)-1)),fleet = l2+:fleet, player)
           }
           else {
             Display.printCoordinatesNotValid
-            askUserForShipSettings(shipFormat, fleet = fleet, playerName)
+            askUserForShipSettings(shipFormat, fleet = fleet, player)
           }
         }
         //the input is identified as a quit
         case _ => {
           Display.printCoodinatesNotCorrect
-          askUserForShipSettings(shipFormat, fleet, playerName)
+          askUserForShipSettings(shipFormat, fleet, player)
         }
       }
     }
   }
-
-
-  /**
-    * This function asks a user to enter some information
-    * @param size The size of the ship
-    */
-  /*def askShipsOfSize(size: Int): Option[Ship] = {
-    Display.printAskStartingPoint(size)
-    val settings = Input.startingPoint
-    val startingPoint = settings.split(" ")
-      startingPoint.size match{
-        case 3 => {
-          //if the inputs are valid
-          if (Ship.isValid(x = startingPoint(0).toInt, y = startingPoint(1).toInt, size, direction = startingPoint(2))) {
-            val l2 = Ship.createShipFromStartingPoint(Cell(startingPoint(0).toInt, startingPoint(1).toInt), size, startingPoint(2))
-            println(l2)
-            Some(l2)
-          }
-          else {
-            Display.printShipNotValid
-            None
-          }
-
-        }
-        //the input is identified as a quit
-        case _ => {
-          Display.printWrongInput
-          None
-        }
-      }
-    }*/
-
-
-
-
-  //1st player returned --> player, second--> opponent
 
   /**
     * This function return whether a ship is sunk or not
@@ -230,17 +202,17 @@ object Utility {
     else isShipSunk(fleet.tail, cell)
   }
 
-  def initializeRound(looser: Player, winner: Player, random: Random): Game = {
-    val listShipPlayer1: List[Ship] = Utility.askForShipSettings(NUMBER_AND_SIZE_OF_SHIPS, Nil, looser.name, looser.level, random)
+  def initializeRound(looser: Player, winner: Player): Game = {
+    val listShipPlayer1: List[Ship] = Utility.askForShipSettings(NUMBER_AND_SIZE_OF_SHIPS, Nil, looser)
     val gridPlayer1: Grid = Grid.initializeGridFromFleet(listShipPlayer1, Grid.SIZE)
-    val player1: Player = looser.copy(_fleet = listShipPlayer1, _gridStates = gridPlayer1, _isTurnToPlay = true)
+    val player1: Player = looser.copy(_fleet = listShipPlayer1, _gridStates = gridPlayer1, _isTurnToPlay = true, _currentDirection = None, _targeted = Nil)
 
 
-    val listShipPlayer2: List[Ship] = Utility.askForShipSettings(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, winner.name, winner.level, random)
+    val listShipPlayer2: List[Ship] = Utility.askForShipSettings(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, winner)
     val gridPlayer2: Grid = Grid.initializeGridFromFleet(listShipPlayer2, Grid.SIZE)
-    val player2: Player = winner.copy(_fleet = listShipPlayer2, _gridStates = gridPlayer2)
+    val player2: Player = winner.copy(_fleet = listShipPlayer2, _gridStates = gridPlayer2, _isTurnToPlay=false, _currentDirection = None, _targeted = Nil)
 
-    Game(player1, player2, random)
+    Game(player1, player2)
   }
 
   def askPlayerMode(): String = {
@@ -271,10 +243,10 @@ object Utility {
     }
   }
 
-  def askForShipSettings(shipFormat: List[List[Int]], fleet: List[List[Cell]], playerName: String, playerLevel: Option[Int], random: Random): List[Ship] = {
-    playerLevel match{
-      case None => Utility.askUserForShipSettings(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, playerName)
-      case _ => Utility.askAIForShipSetting(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, random)
+  def askForShipSettings(shipFormat: List[List[Int]], fleet: List[List[Cell]], player: Player): List[Ship] = {
+    player.level match{
+      case None => Utility.askUserForShipSettings(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, player)
+      case _ => Utility.askAIForShipSetting(Utility.NUMBER_AND_SIZE_OF_SHIPS, Nil, player)
     }
   }
 
@@ -305,9 +277,13 @@ object Utility {
         //level1
         case Some(1) => askAI1ToShoot(game.copy())
         //level2
-        case Some(2) => askAI2ToShoot(game.copy())
+        case Some(2) => {
+          askAI2ToShoot(game.copy())
+        }
         //level3
-        case _ => askAI3ToShoot(game.copy())
+        case _ => {
+          askAI3ToShoot(game.copy())
+        }
 
       }
     }
@@ -327,9 +303,13 @@ object Utility {
         //level1
         case Some(1) => askAI1ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
         //level2
-        case Some(2) => askAI2ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+        case Some(2) => {
+          askAI2ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+        }
         //level3
-        case _ => askAI3ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+        case _ => {
+          askAI3ToShoot(game.copy(_player1 = game.player2, _player2 = game.player1))
+        }
 
       }
     }
@@ -341,7 +321,7 @@ object Utility {
 
   //TODO continu for the AI
   def askAI1ToShoot(game: Game): Game = {
-    val cell: Cell = Cell(game.random.nextInt(Grid.SIZE), game.random.nextInt(Grid.SIZE))
+    val cell: Cell = Cell(game.player1.random.get.nextInt(Grid.SIZE), game.player1.random.get.nextInt(Grid.SIZE))
     val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
     Display.clearScreen
     val player2: Player = game.player1.copy(_isTurnToPlay = false)
@@ -349,258 +329,88 @@ object Utility {
   }
 
 
+  @tailrec
   def askAI2ToShoot(game: Game): Game = {
-  //here the player1 in the game is the AI2
-      val x = game.random.nextInt(Grid.SIZE)
-      val y = game.random.nextInt(Grid.SIZE)
-      game.player2.gridStates.gridStates(x)(y) match {
-        //if it was not yet targeted
-        case Utility.NOT_TARGETED =>{
-          val cell: Cell = Cell(x,y)
-          val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
-          Display.clearScreen
-          val player2: Player = game.player1.copy(_isTurnToPlay = false)
-          game.copy(_player1 = player1, _player2 = player2)
-        }
+    //here the player1 in the game is the AI2
+    val r = game.player1.random.get
+    val x = r.nextInt(Grid.SIZE)
+    val y = r.nextInt(Grid.SIZE)
 
-        //if it has been targeted
-        case _ => {
-          this.askAI2ToShoot(game.copy())
-        }
+    println("AI 3 attaque")
+    println("x: "+x+ "; y =" + y)
+    println("Cell: "+ Cell(x,y))
+    haveBeenTargeted(game.player2.gridStates, Cell(x, y)) match {
+      //if it was not yet targeted
+      case false =>{
+        val cell: Cell = Cell(x,y)
+        println("IA 2 : " + cell)
+        val player1: Player = Utility.shoot(game.player2, cell.x, cell.y)
+        val player2: Player = game.player1.copy(_isTurnToPlay = false, _random = Some(r))
+        game.copy(_player1 = player1, _player2 = player2)
+      }
+
+      //if it has been targeted
+      case _ => {
+        this.askAI2ToShoot(game)
       }
     }
+  }
 
   @tailrec
   def askAI3ToShoot(game: Game): Game = {
     //player1 is considered as AI3
-    val ai: Player = game.player1
-
-    ai.testedDirection.size match {
-
-        //nothing was hit before
-      case 0 =>{
-        val x = game.random.nextInt(Grid.SIZE)
-        val y = game.random.nextInt(Grid.SIZE)
-        val cellToTarget = Cell(x, y)
-
-        //if the square have already been targeted or if the player have already hit this square
-        if (haveBeenTargeted(game.player2.gridStates, cellToTarget) || game.player1.hit.contains(cellToTarget)){
-          askAI3ToShoot(game.copy())
-        }
-        else{
-
-          val player1: Player = Utility.shoot(game.player2, cellToTarget.x, cellToTarget.y)
-
-          //see what it was: a hit or miss
-          val newGame: Game = player1.gridStates.gridStates(cellToTarget.x)(cellToTarget.y) match {
-
-            //if hit
-            case Utility.HIT_STATUS => {
-
-              //if the square is in the last column
-              if (cellToTarget.x==Grid.SIZE-1){
-
-                //nextime check directly to the left
-                  game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget :: ai.hit, _testedDirection = List("Right", "Left"), _isTurnToPlay = false))
-
-
-                }
-              else{
-                //explore the right side of the targeted
-                game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget::ai.hit, _testedDirection = List("Right"), _isTurnToPlay = false))
-              }
-            }
-            //so ship founded
-            case _ => {
-              //square missed, choose randomly next time
-              game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = Nil))
-            }
-          }
-          newGame
-        }
+    if (game.player1.targeted.isEmpty) {
+      val x = game.player1.random.get.nextInt(Grid.SIZE)
+      val y = game.player1.random.get.nextInt(Grid.SIZE)
+      if (Utility.haveBeenTargeted(game.player2.gridStates, Cell(x, y))) {
+        askAI3ToShoot(game.copy())
       }
-        //check si la case n'est pas déja contenue dans la liste des hit
-
-
-        //the last action was a hit, so first see if there is nothing left in its right
-      case 1 => {
-        val cellToTarget: Cell = Cell(ai.hit.head.x+1, ai.hit.head.y)
-        //the square on the right of the target have already been tested so --> ask with with direction left testedDirection
-        if (haveBeenTargeted(game.player2.gridStates, cellToTarget) && game.player1.hit.contains(cellToTarget)){
-          askAI3ToShoot(game.copy(_player1 = ai.copy(_testedDirection = List("Right", "Left"))))
-        }
-        else {
-          //shoot to that cellTargets
-          val player1: Player = Utility.shoot(game.player2, cellToTarget.x, cellToTarget.y)
-
-          //according to the result, change the state of the player
-          val newGame: Game = player1.gridStates.gridStates(cellToTarget.x)(cellToTarget.y) match {
-
-            case Utility.HIT_STATUS =>{
-
-              if(cellToTarget.x==Grid.SIZE-1){
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = List("Right", "Left"), _hit = cellToTarget::ai.hit))
-              }
-              else{
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = List("Right"), _hit = cellToTarget::ai.hit))
-              }
-            }
-            case _ => {
-
-              //cannot turn on the left anymore
-              if(cellToTarget.x==0){
-
-                //next time target directly up
-                if (cellToTarget.y==0){
-                  //check directly down the square
-                  game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget :: ai.hit, _testedDirection = List("Right","Left", "Up", "Down"), _isTurnToPlay = false))
-                }
-
-                  //goes directly down
-                else {
-                  game.copy(_player1 = player1, _player2 = ai.copy(_testedDirection = List("Right","Left", "Up"), _isTurnToPlay = false))
-                }
-
-              }
-              else{
-                //next time turn to the right again
-                game.copy(_player1 = player1, _player2 = ai.copy(_testedDirection = List("Right","Left"), _isTurnToPlay = false))
-
-              }
-            }
-          }
-          newGame
-        }
-          //if contains: on rajoute à la tête de la tête de hit cellToTarget :: ai.hit et reappeler la fonction
-      }
-
-      //a hit has been made and the squares on the right side have been tested already, so see if there is nothing left in its left
-      case 2 =>{
-        val cellToTarget: Cell = Cell(ai.hit.head.x-1, ai.hit.head.y)
-
-        //if the square on the left of the target have already been tested so --> ask with an empty testedDirection
-        if (haveBeenTargeted(game.player2.gridStates, cellToTarget) && game.player1.hit.contains(cellToTarget)){
-          askAI3ToShoot(game.copy(_player1 = ai.copy(_testedDirection = List("Right", "Left", "Up"))))
-        }
-        else {
-          //shoot to that cellTargets
-          val player1: Player = Utility.shoot(game.player2, cellToTarget.x, cellToTarget.y)
-
-          //according to the result, change the state of the player
-          val newGame: Game = player1.gridStates.gridStates(cellToTarget.x)(cellToTarget.y) match {
-
-              //the ship is horizontal
-            case Utility.HIT_STATUS =>{
-              //arrivé au bout
-              //il demande si la case de droit est contenu dans les hit --> c'est un bateau horizontal donc next step --> on vide targetedDirection
-
-
-              //if it is on the first column then since it is horizontal, it is not neccessary to check up
-              if(cellToTarget.x==0){
-                //no need to check up because the ship is horizontal
-                  game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget :: ai.hit, _testedDirection = Nil, _isTurnToPlay = false), _random = game.random)
-                }
-
-                //continue to check left
-              else {
-                  game.copy(_player1 = player1, _player2 = ai.copy(_hit = cellToTarget :: ai.hit, _testedDirection = List("Right","Left"), _isTurnToPlay = false), _random = game.random)
-                }
-            }
-
-            case _ => {
-
-              //the last targeted cell is in the last column
-              if (cellToTarget.x-1==Grid.SIZE-1){
-                if (cellToTarget.y==0){
-                  game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = List("Right", "Left", "Up", "Down")), _random = game.random)
-                }
-                else{
-                  game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = List("Right", "Left", "Up")), _random = game.random)
-                }
-              }
-                //it means she ship is horizontal so no need to check up or down again
-              else {
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = Nil), _random = game.random)
-              }
-            }
-          }
-          newGame
-        }
-      }
-
-      //a hit has been made and the squares on the right and left sides have been tested already, so see if there is nothing left up the concerned square
-      case 3 =>{
-        val cellToTarget: Cell = Cell(ai.hit.head.x, ai.hit.head.y-1)
-
-        //if the square on the left of the target have already been tested so --> ask with an empty testedDirection
-        if (haveBeenTargeted(game.player2.gridStates, cellToTarget) && game.player1.hit.contains(cellToTarget)){
-          askAI3ToShoot(game.copy(_player1 = ai.copy(_testedDirection = List("Right", "Left", "Up", "Down"))))
-        }
-        else {
-          //shoot to that cellTargets
-          val player1: Player = Utility.shoot(game.player2, cellToTarget.x, cellToTarget.y)
-
-          //according to the result, change the state of the player
-          val newGame: Game = player1.gridStates.gridStates(cellToTarget.x)(cellToTarget.y) match {
-            //the ship is horizontal
-            case Utility.HIT_STATUS =>{
-              if (cellToTarget.y==0){
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _hit= cellToTarget::ai.hit, _testedDirection = List("Right", "Left", "Up", "Down")), _random = game.random)
-              }
-              else{
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _hit= cellToTarget::ai.hit, _testedDirection = List("Right", "Left", "Up", "Down")), _random = game.random)
-
-              }
-            }
-            case _ => {
-              //if cellToTarget is in the last row
-              if (cellToTarget.y==Grid.SIZE-1){
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = Nil), _random = game.random)
-              }
-              else{
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = List("Right", "Left", "Up", "Down")), _random = game.random)
-              }
-            }
-          }
-          newGame
-        }
-      }
-
-      //a hit has been made and the squares on the right and left sides have been tested already, so see if there is nothing left down the concerned square
-      case 4 =>{
-        val cellToTarget: Cell = Cell(ai.hit.head.x, ai.hit.head.y+1)
-
-        //if the square on the left of the target have already been tested so --> ask with an empty testedDirection
-        if (haveBeenTargeted(game.player2.gridStates, cellToTarget) && game.player1.hit.contains(cellToTarget)){
-          askAI3ToShoot(game.copy(_player1 = ai.copy(_testedDirection = Nil)))
-        }
-        else {
-          //shoot to that cellTargets
-          val player1: Player = Utility.shoot(game.player2, cellToTarget.x, cellToTarget.y)
-
-          //according to the result, change the state of the player
-          val newGame: Game = player1.gridStates.gridStates(cellToTarget.x)(cellToTarget.y) match {
-
-            //the ship is horizontal
-            case Utility.HIT_STATUS =>{
-              if (cellToTarget.y==Grid.SIZE-1){
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _hit= cellToTarget::ai.hit, _testedDirection = Nil), _random = game.random)
-              }
-              else{
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _hit= cellToTarget::ai.hit, _testedDirection = List("Right", "Left", "Up", "Down")), _random = game.random)
-
-              }
-            }
-            case _ => {
-                game.copy(_player1= player1, _player2 = ai.copy(_isTurnToPlay = false, _testedDirection = Nil), _random = game.random)
-              }
-            }
-          newGame
-          }
-        }
-
+      else {
+        val toTarget: List[Cell] = Utility.filterValidCells(generatePotentialCells(x, y), Nil)
+        askAI3ToShoot(game.copy(_player1 = game.player1.copy(_targeted = toTarget)))
       }
     }
+    else {
+      Utility.haveBeenTargeted(game.player2.gridStates, game.player1.targeted.head) match {
+        case true => {
+          askAI3ToShoot(game.copy(_player1 = game.player1.copy(_targeted = game.player1.targeted.tail)))
+        }
+        case _ => {
+          val player1 = shoot(game.player2, game.player1.targeted.head.x, game.player1.targeted.head.y)
+          player1.gridStates.gridStates(game.player1.targeted.head.y)(game.player1.targeted.head.x) match {
+            case Utility.HIT_STATUS => {
+              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail))
+            }
+            case _ => {
+              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail))
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+
+
+  def generatePotentialCells(x: Int, y: Int): List[Cell] = {
+    Cell(x-1,y)::Cell(x+1,y)::Cell(x,y-1)::Cell(x,y+1)::Nil
+  }
+
+  @tailrec
+  def filterValidCells(potential: List[Cell], valid: List[Cell]): List [Cell] = {
+    if (potential.isEmpty){
+      valid
+    }
+    else if (Cell.isValid(potential.head.x, potential.head.y)){
+          filterValidCells(potential.tail, potential.head::valid)
+        }
+        else {
+         filterValidCells(potential.tail, valid)
+        }
+  }
+
+
 
 
 
@@ -615,10 +425,20 @@ object Utility {
 
   //says whether or not a square have been targeted
   def haveBeenTargeted(opponentGrid: Grid, cell: Cell): Boolean = {
-    opponentGrid.gridStates(cell.x)(cell.y) match {
-      case Utility.NOT_TARGETED => false
-      case _ => true
+    println("$$$$---==== "+cell)
+    println(opponentGrid.gridStates(cell.y)(cell.x))
+    opponentGrid.gridStates(cell.y)(cell.x) match {
+      case Utility.MISSED_STATUS => {
+        true
+      }
+      case Utility.HIT_STATUS => {
+        true
+      }
+      case _ => false
     }
   }
+
+
+
 
 }

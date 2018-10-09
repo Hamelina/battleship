@@ -1,6 +1,8 @@
 package iohandler
 
-import game.{Game, Grid, Utility}
+import game.Utility
+import game.{Game, Grid}
+
 
 import scala.annotation.tailrec
 
@@ -25,11 +27,11 @@ object Display{
   def clearScreen: Unit = {print("\u001b[2J")}
 
   def printAnnounceMyGrid: Unit ={
-    print("\n Here is your grid: ")
+    print("\n Here is your grid: \n")
   }
 
   def printAnnounceOpponentGrid: Unit ={
-    print("\n Here is your opponent's grid: ")
+    print("\n Here is your opponent's grid: \n")
   }
 
   def printFormatNotValid: Unit = {
@@ -108,7 +110,7 @@ object Display{
     def stringByLine(grid2: Grid, line: List[String], result: String): Unit = {
       if (line.isEmpty) {
         print(s"\n $result")
-        if (!grid2.gridStates.isEmpty) {
+        if (grid2.gridStates.nonEmpty) {
           stringByLine(grid2 = grid2.copy(_gridStates = grid2.tail), line = grid2.copy(_gridStates = grid2.gridStates).head, result= (Grid.SIZE- grid2.size).toString+" " )
         }
       }
@@ -147,7 +149,7 @@ object Display{
     def stringByLine(grid2: Grid, line: List[String], result: String): Unit = {
       if (line.isEmpty) {
         print(s"\n $result")
-        if (!grid2.gridStates.isEmpty) {
+        if (grid2.gridStates.nonEmpty) {
           stringByLine(grid2 = grid2.copy(_gridStates = grid2.tail), line = grid2.copy(_gridStates = grid2.gridStates).head, result= (Grid.SIZE-grid2.size).toString+" " )
         }
       }
@@ -187,12 +189,15 @@ object Display{
   }
 
   def printScore(winnerName: String, winnerScore: Int, looserName: String, looserScore: Int): Unit = {
-    print(s"\n Score: $winnerName : $winnerScore VA $looserName : $looserScore ")
+    print(s"\n Score: $winnerName : $winnerScore VS $looserName : $looserScore ")
   }
   def printWinner(winnerName: String): Unit = {
     print(s"\n Congratulations to $winnerName, you won this round ! ")
   }
   def printSomethingWentWrong: Unit = {
-    print("\\n Something went wrong. The source code must have been changed by someone")
+    print("\n Something went wrong. The source code must have been changed by someone")
+  }
+  def printEndOfGame: Unit = {
+    print("\n ================ END OF GAME ================ \n")
   }
 }

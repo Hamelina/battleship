@@ -56,6 +56,13 @@ object Grid{
     val cells: List[Cell] = (fleet.map(x => x.cells)).flatMap(x => x)
     putShipOnGrid(cells, defautList)
   }
+
+  /**
+    * Creates a grid with occupied squares.
+    * @param cells The coordinates of the occupied cells.
+    * @param statesList The grid to update.
+    * @return A new grid updated that takes into account the cells given as argument of the function.
+    */
   @tailrec
   def putShipOnGrid(cells: List[Cell], statesList: List[List[String]]): Grid = {
     if (cells.isEmpty) new Grid(_gridStates = statesList)

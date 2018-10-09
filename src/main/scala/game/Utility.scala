@@ -34,16 +34,14 @@ object Utility {
 
   //Size and number of the different ships allowed during the game
   val NUMBER_AND_SIZE_OF_SHIPS: List[List[Int]] = List(List(1,1),List(1,2),List(2,3),List(1,4),List(1,5))
+  //Maximum round that can be player between two players.
   val NUMBER_OF_TOTAL_ROUND: Int = 100
-  val NB_SHIP = 6
-  val CARRIER: (Int, Int) = (1, 1)
-  val BATTLESHIP: (Int, Int) = (2, 1)
-  val CRUISER: (Int, Int) = (3, 1)
-  val SUBMARINE: (Int, Int) = (4, 1)
-  val DESTROYER: (Int, Int) = (5, 1)
-  val FILENAME: String = "./ai_proof.csv"
-  //
 
+  /**
+    * Asks a user to shoot
+    * @param playerName The name of the player
+    * @return The cell given by the user, corresponds to the coordinates of a square to target.
+    */
   @tailrec
   def askUserToShoot(playerName: String): Cell = {
 
@@ -93,10 +91,13 @@ object Utility {
   }
 
 
-
-
-
-
+  /**
+    * Ask an AI to place ships.
+    * @param shipFormat
+    * @param fleet
+    * @param player
+    * @return A list of ships
+    */
   @tailrec
   def askAIForShipSetting(shipFormat: List[List[Int]], fleet: List[List[Cell]], player: Player): List[Ship] = {
     //there is no ship left to place
@@ -132,15 +133,10 @@ object Utility {
 
 
 
-
-
-
-
-  //a function that places ships on a grid for 2 players, is returns a game.
   /**
-    * This function asks a user to enter some information
-    * @param size The maximum size of the ship
-    * @param fleet The list of initial existing occupied cells corresponding to the initial existing fleet
+    * Asks a user to enter some information
+    * @param shipFormat A list of tuple that corresponds to a list of number and size of ship that needs to be placed on the grid so that the game can begin.
+    * @param fleet The list of initial existing cells corresponding to the initial existing fleet
     * @return A list of ships that corresponds the possible ships created by the input of the user
     */
   @tailrec
@@ -191,10 +187,10 @@ object Utility {
   }
 
   /**
-    * This function return whether a ship is sunk or not
-    * @param fleet
-    * @param cell
-    * @return
+    * This function return whether a square targeted is a hit or not
+    * @param fleet The current fleet that corresponds to the current occupied squares.
+    * @param cell The coordinates of a square we need to check.
+    * @return A boolean equals to true if the given cell is occupied, otherwise false.
     */
   def isShipSunk(fleet: List[Ship], cell: Cell): Boolean = {
     if (fleet.isEmpty)  false
@@ -215,6 +211,10 @@ object Utility {
     Game(player1, player2)
   }
 
+  /**
+    * Ask the player to choose the mode of the game
+    * @return A String that corresponds to the mode of the game.
+    */
   def askPlayerMode(): String = {
     Display.printAskMode
     val mode = Input.mode
@@ -379,7 +379,7 @@ object Utility {
           val player1 = shoot(game.player2, game.player1.targeted.head.x, game.player1.targeted.head.y)
           player1.gridStates.gridStates(game.player1.targeted.head.y)(game.player1.targeted.head.x) match {
             case Utility.HIT_STATUS => {
-              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail:::Utility.filterValidCells(generatePotentialCells(game.player1.targeted.head.x, game.player1.targeted.head.y),Nil)))
+              game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail))//:::Utility.filterValidCells(generatePotentialCells(game.player1.targeted.head.x, game.player1.targeted.head.y),Nil)))
             }
             case _ => {
               game.copy(_player1 = player1, _player2 = game.player1.copy(_isTurnToPlay = false, _targeted = game.player1.targeted.tail))

@@ -14,11 +14,17 @@ This is a battleship implemented in Scala by Hamelina Julia EHAMELO
     The source code is available in the following repository:
     https://github.com/Hamelina/battleship
     Then here are the steps you need to follow to make it run:
+    
       ● First make sure you have the environnement set up (1.
+      
       ● Clone or download the repository on you computer
+      
       ● Open the terminal and type the following command:
+        
         $ cd battleship $ sbt
+        
         $ run Main
+        
     Then, according to what what you would like to do, you have to following the instructions.
 
   1.3. The rules
